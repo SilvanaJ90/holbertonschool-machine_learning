@@ -8,7 +8,7 @@
 
 def add_arrays(arr1, arr2):
     """ Adds two arrays element-wise"""
-    if len(arr1) !=  len(arr2):
+    if len(arr1) != len(arr2):
         return None
     else:
         new_list = []
