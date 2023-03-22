@@ -14,7 +14,7 @@ def matrix_transpose(matrix):
     """Create an empty matrix with changed dimensions"""
     transposed_matrix = [[0 for j in range(row)] for i in range(columns)]
 
-    """Swaps each element of the matrix with its corresponding element in the opposite position."""
+    """Transposed"""
     for i in range(row):
         for j in range(columns):
             transposed_matrix[j][i] = matrix[i][j]
