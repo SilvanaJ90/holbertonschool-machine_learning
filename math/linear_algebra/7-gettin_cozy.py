@@ -2,7 +2,8 @@
 """
     Concatenates two matrices along a specific axis
     Args:  mat1 and mat2 matrices containing ints/floats
-           and axis as an integer representing the axis along which the matrices should be concatenated.
+           and axis as an integer representing 
+           the axis along which the matrices should be concatenated.
     Returns: new matrix, if the two matrices cannot be concatenated, return None
 """
 
