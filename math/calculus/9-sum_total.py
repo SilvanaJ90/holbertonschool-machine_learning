@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+""" Doc """
 
 
 def summation_i_squared(n):
     """
-        function Return sum 
+        function Return sum
     """
     if n != int(n) or n < 1:
         return None
