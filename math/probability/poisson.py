@@ -27,4 +27,4 @@ class Poisson:
             return 0
         for i in range(1, k+1):
             factorial *= i
-        return (self.lambtha**k) * (e**(- self.lambtha)) / factorial
+        return ((self.lambtha ** k) * (2.7182818285 ** -self.lambtha)) / factorial
