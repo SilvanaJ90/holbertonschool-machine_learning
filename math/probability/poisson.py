@@ -5,19 +5,14 @@
 class Poisson:
     """ Class Poisson """
     def __init__(self, data=None, lambtha=1.):
-        self.data = data
-        self.lambtha = float(lambtha)
-        
-    def lambtha(self, data):
-        lambtha = lambtha
-           
-        if not data:
-            data = lambtha
+
+        if data is None:
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
+            self.lambtha = float(lambtha)
         else:
-            lambtha * data
-            if data < 2:
+            if not isinstance(data, list):
+                raise TypeError("data must be a list")
+            if len(data) < 2:
                 raise ValueError("data must contain multiple values")
-        return lambtha
-    
+            self.lambtha = sum(data) / len(data)
