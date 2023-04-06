@@ -19,7 +19,6 @@ class Poisson:
 
     def pmf(self, k):
         """ Calculates the value of the PMF """
-        e = 2.7182818285
         factorial = 1
         if isinstance(k, int):
             k = int(k)
@@ -27,5 +26,5 @@ class Poisson:
             return 0
         for i in range(1, k+1):
             factorial *= i
-        pmp = (self.lambtha**k) * (e**(- self.lambtha)) / factorial
+        pmp = (self.lambtha**k) * (2.7182818285**(- self.lambtha)) / factorial
         return pmp
