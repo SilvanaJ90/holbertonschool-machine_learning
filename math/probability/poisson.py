@@ -21,8 +21,7 @@ class Poisson:
         """ Calculates the value of the PMF """
         e = 2.7182818285
         factorial = 1
-        if isinstance(k, int):
-            k = int(k)
+        k = int(k)
         if k < 0:
             return 0
         for i in range(1, k+1):
