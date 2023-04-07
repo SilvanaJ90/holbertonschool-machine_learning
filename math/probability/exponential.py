@@ -20,12 +20,9 @@ class Exponential:
     def pdf(self, x):
         """ Calculates the value of the PMF """
         e = 2.7182818285
-        factorial = 1
-        x = int(x)
+        x = float(x)
         if x < 0:
             return 0
-        for i in range(1, x+1):
-            factorial *= i
         return (self.lambtha) * (e**- self.lambtha)
 
     def cdf(self, x):
