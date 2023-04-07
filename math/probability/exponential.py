@@ -26,7 +26,7 @@ class Exponential:
             return 0
         for i in range(1, x+1):
             factorial *= i
-        return ((self.lambtha**x) * (e**- self.lambtha)) / factorial
+        return (self.lambtha) * (e**- self.lambtha)
 
     def cdf(self, x):
         """ Calculates the value of the CDF """
@@ -35,5 +35,5 @@ class Exponential:
             return 0
         cdf = 0
         for i in range(x+1):
-            cdf += self.pmf(i)
+            cdf += self.pdf(i)
         return cdf
