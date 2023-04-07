@@ -16,3 +16,24 @@ class Exponential:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
             self.lambtha = 1 / (sum(data) / len(data))
+
+    def pdf(self, x):
+        """ Calculates the value of the PMF """
+        e = 2.7182818285
+        factorial = 1
+        x = int(x)
+        if x < 0:
+            return 0
+        for i in range(1, x+1):
+            factorial *= i
+        return ((self.lambtha**x) * (e**- self.lambtha)) / factorial
+
+    def cdf(self, x):
+        """ Calculates the value of the CDF """
+        x = int(x)
+        if x < 0:
+            return 0
+        cdf = 0
+        for i in range(x+1):
+            cdf += self.pmf(i)
+        return cdf
