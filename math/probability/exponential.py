@@ -27,7 +27,7 @@ class Exponential:
 
     def cdf(self, x):
         """ Calculates the value of the CDF """
-        x = int(x)
+        x = float(x)
         if x < 0:
             return 0
         cdf = 0
