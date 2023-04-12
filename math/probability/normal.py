@@ -21,3 +21,22 @@ class Normal:
             self.mean = sum(data) / len(data)
             self.stddev = (sum((x - self.mean)**2
                                for x in data) / len(data))**(1/2)
+
+
+    def z_score(self, x):
+        """
+        Calculates the z-score of a given x-value.
+
+        :param x: The x-value to calculate the z-score for.
+        :return: The z-score of x.
+        """
+        return (x - self.mu) / self.sigma
+
+    def x_value(self, z):
+        """
+        Calculates the x-value of a given z-score.
+
+        :param z: The z-score to calculate the x-value for.
+        :return: The x-value of z.
+        """
+        return z * self.sigma + self.mu
