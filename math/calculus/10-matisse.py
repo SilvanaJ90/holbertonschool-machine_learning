@@ -4,6 +4,15 @@
 
 def poly_derivative(poly):
     """
-        function Return sum
+    Calculates the derivative of a polynomial:
     """
-    pass
+    if not isinstance(poly, list) or len(poly) == 0:
+        return None
+    result = []
+    for i in range(1, len(poly)):
+        coeff = i * poly[i]
+        result.append(coeff)
+
+    if sum(result) == 0:
+        return 0
+    return result
