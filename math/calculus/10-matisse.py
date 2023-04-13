@@ -8,6 +8,8 @@ def poly_derivative(poly):
     """
     if not isinstance(poly, list) or len(poly) == 0:
         return None
+    if len(poly) == 1:
+        return 0
     result = []
     for i in range(1, len(poly)):
         coeff = i * poly[i]
