@@ -1,6 +1,6 @@
 # Calculus
 
-![This is an image](https://s3.eu-west-3.amazonaws.com/hbtn.intranet/uploads/medias/2018/9/843c4172ce8623cf3f29.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA4MYA5JM5DUTZGMZG%2F20230419%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20230419T022900Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=0c8f1558e2e63f5abd4958d85ef12d6e329f550730a235fc3d1f8727cea5e494)
+![This is an image](https://github.com/SilvanaJ90/holbertonschool-machine_learning/blob/main/math/calculus/img.png)
 
 
 
