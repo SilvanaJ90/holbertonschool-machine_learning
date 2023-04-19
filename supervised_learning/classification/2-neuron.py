@@ -27,8 +27,9 @@ class Neuron:
     @property
     def A(self):
         return self.__A
-    
 
     def forward_prop(self, X):
         """ def forward"""
-        self.X = numpy.ndarray (nx, m)
+        z = np.dot(self.__W, X) + self.__b
+        self.__A = 1 / (1 + np.exp(-z))
+        return self.__A
