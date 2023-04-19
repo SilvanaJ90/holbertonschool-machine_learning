@@ -37,19 +37,23 @@ General
 ## More Info
 Installing Matplotlib 3.0
 
+```
 pip install --user matplotlib==3.0
 pip install --user Pillow
 sudo apt-get install python3-tk
+```
 
 To check that it has been successfully downloaded, use pip list.
 Configure X11 Forwarding
 
 Update your Vagrantfile to include the following:
 
+```
 Vagrant.configure(2) do |config|
   ...
   config.ssh.forward_x11 = true
 end
+```
 
 If you are running vagrant on a Mac, you will have to install XQuartz and restart your computer.
 
