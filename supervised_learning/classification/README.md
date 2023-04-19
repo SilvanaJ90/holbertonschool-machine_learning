@@ -1,5 +1,8 @@
 # Classification
 
+![This is an image](http://neuralnetworksanddeeplearning.com/images/tikz12.png)
+
+
 ## Background Context
 
 At the end of this project, you should be able to build your own binary image classifier from scratch using numpy.
