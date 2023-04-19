@@ -1,6 +1,6 @@
 # Linear Algebra
 
-![This is an image](https://s3.eu-west-3.amazonaws.com/hbtn.intranet/uploads/medias/2018/9/54daaf81421a9b894688.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA4MYA5JM5DUTZGMZG%2F20230419%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20230419T022157Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=5bf80936bcd2b1738f3a3cfd7a9de0d5760f479e03a7251c33a87d6ef11db1da)
+![This is an image](https://github.com/SilvanaJ90/holbertonschool-machine_learning/blob/main/math/linear_algebra/img.png)
 
 
 
