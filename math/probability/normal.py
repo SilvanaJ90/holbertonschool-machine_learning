@@ -51,10 +51,23 @@ class Normal:
         return coef * e ** exp
     
     def cdf(self, x):
-        import numpy as np
-        """ Calculates the value of the CDF """
-        t = 1 / (1 + 0.2316419 * (x - self.mean) / self.stddev)
-        cdf_value = 1 - 0.3989423 * np.exp(-((x - self.mean) / self.stddev) ** 2 / 2) * (
-                t * (0.319381530 - t * (0.356563782 - t * (1.781477937 - t * (1.821255978 - 0.379473726 * t)))))
+        """
+        Calcula la función de distribución acumulativa (CDF)
+        para un valor dado x utilizando una aproximación matemática.
+        x es el valor para el cual se desea calcular la CDF.
+        Devuelve la CDF para x.
+        """
+        t = 1 / (1 + 0.3275911 * (x - self.mean) / self.stddev)
+        cdf_value = 1 - 0.3989423 * self.exp_approx(-((x - self.mean) / self.stddev) ** 2 / 2) * (
+                t * (0.254829592 - t * (-0.284496736 - t * (1.421413741 - t * (-1.453152027 - t * 1.061405429)))))
 
         return cdf_value
+
+    def exp_approx(self, x):
+        """
+        Aproximación de la función exponencial utilizando una serie de Taylor truncada.
+        x es el valor para el cual se desea calcular la función exponencial.
+        Devuelve la aproximación de la función exponencial para x.
+        """
+        # Truncar la serie de Taylor después del término cuadrático
+        return 1 + x + (x ** 2) / 2
