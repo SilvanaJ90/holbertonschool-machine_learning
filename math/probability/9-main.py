@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+
 Normal = __import__('normal').Normal
 
 np.random.seed(0)

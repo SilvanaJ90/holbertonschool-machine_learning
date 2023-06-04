@@ -49,3 +49,9 @@ class Normal:
         coef = 1 / (self.stddev * (2 * π) ** 0.5)
         exp = -(x - self.mean) ** 2 / (2 * self.stddev ** 2)
         return coef * e ** exp
+    
+    def cdf(self, x):
+        import math
+        """ Calculates the value of the CDF """
+        z = (x - self.mean) / (self.stddev * math.sqrt(2))
+        return (1 + math.erf(z)) / 2
