@@ -51,7 +51,10 @@ class Normal:
         return coef * e ** exp
     
     def cdf(self, x):
-        import math
+        import numpy as np
         """ Calculates the value of the CDF """
-        z = (x - self.mean) / (self.stddev * math.sqrt(2))
-        return (1 + math.erf(z)) / 2
+        t = 1 / (1 + 0.2316419 * (x - self.mean) / self.stddev)
+        cdf_value = 1 - 0.3989423 * np.exp(-((x - self.mean) / self.stddev) ** 2 / 2) * (
+                t * (0.319381530 - t * (0.356563782 - t * (1.781477937 - t * (1.821255978 - 0.379473726 * t)))))
+
+        return cdf_value
