@@ -58,16 +58,21 @@ class Normal:
         Devuelve la CDF para x.
         """
         t = 1 / (1 + 0.3275911 * (x - self.mean) / self.stddev)
-        cdf_value = 1 - 0.3989423 * self.exp_approx(-((x - self.mean) / self.stddev) ** 2 / 2) * (
-                t * (0.254829592 - t * (-0.284496736 - t * (1.421413741 - t * (-1.453152027 - t * 1.061405429)))))
+        cdf_value = 0.5 * (1 + self.erf_approx((x - self.mean) / (self.stddev * 2 ** 0.5)))
 
         return cdf_value
 
-    def exp_approx(self, x):
+    def erf_approx(self, x):
         """
-        Aproximación de la función exponencial utilizando una serie de Taylor truncada.
-        x es el valor para el cual se desea calcular la función exponencial.
-        Devuelve la aproximación de la función exponencial para x.
+        Aproximación de la función de error utilizando una serie de Taylor truncada.
+        x es el valor para el cual se desea calcular la función de error.
+        Devuelve la aproximación de la función de error para x.
         """
         # Truncar la serie de Taylor después del término cuadrático
-        return 1 + x + (x ** 2) / 2
+        term1 = x / (2 / (3.1415926536 ** 0.5))
+        term2 = -x ** 3 / (12 * (3.1415926536 ** 0.5))
+        term3 = x ** 5 / (480 * (3.1415926536 ** 0.5))
+        term4 = -x ** 7 / (53760 * (3.1415926536 ** 0.5))
+        erf_value = term1 + term2 + term3 + term4
+
+        return erf_value
