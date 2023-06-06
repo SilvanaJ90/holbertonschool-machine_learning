@@ -39,8 +39,6 @@ class Neuron:
         Calculates the cost of the model using logistic regression
         """
         m = Y.shape[1]
-        epsilon = 1e-8
-        A = np.clip(A, epsilon, 1.0 - epsilon)
 
         cost = -(1 / m) * np.sum(Y * np.log(A) +
                                  (1 - Y) * np.log(1.0000001 - A))
