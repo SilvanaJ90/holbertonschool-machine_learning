@@ -47,6 +47,7 @@ class NeuralNetwork:
         return self.__A2
 
     def forward_prop(self, X):
+        """ performs the forward propagation of the neural network. """
         self.__A1 = self.sigmoid(np.dot(self.W1, X) + self.b1)
         self.__A2 = self.sigmoid(np.dot(self.W2, self.A1) + self.b2)
         return self.A1, self.A2
