@@ -53,4 +53,5 @@ class NeuralNetwork:
         return self.A1, self.A2
 
     def sigmoid(self, Z):
+        """ implements the sigmoid activation function """
         return 1 / (1 + np.exp(-Z))
