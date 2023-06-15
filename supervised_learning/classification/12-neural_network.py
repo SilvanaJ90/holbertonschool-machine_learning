@@ -73,7 +73,7 @@ class NeuralNetwork:
         Evaluates the neurons predictions
         """
         _, A = self.forward_prop(X)
-        prediction = np.where(A >= 0.5, 1, 0)
+        prediction = np.round(A).astype(int)
         cost = self.cost(Y, A)
 
         return prediction, cost
