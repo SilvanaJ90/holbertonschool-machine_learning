@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import tensorflow as tf
-"""Doc """
+""" Function create_placeholders """
 
 
 def create_placeholders(nx, classes):
