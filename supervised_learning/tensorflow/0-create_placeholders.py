@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import tensorflow as tf
+"""Doc """
+
 
 def create_placeholders(nx, classes):
-    """ 
+    """
         Fuction return placeholders x and y
         for the neural network
         nx: the number of feature columns in our data
