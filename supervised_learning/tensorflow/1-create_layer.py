@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import tensorflow as tf
+""" Function create_layer """
 
 def create_layer(prev, n, activation):
     """
@@ -11,3 +13,7 @@ def create_layer(prev, n, activation):
     Returns: the tensor output of the layer
 
     """
+    initializer = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG") 
+    layer = tf.layers.Dense(units=n, activation=activation, kernel_initializer=initializer, name='layer')
+    ouput = layer(prev)
+    return ouput
