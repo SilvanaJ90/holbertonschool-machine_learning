@@ -12,7 +12,7 @@ bitstamp_path = os.path.join(data_folder, 'bitstamp.csv')
 
 
 def preprocess_data(coinbase_path, bitstamp_path):
-    # Load the datasets
+    """ Load the datasets """
     df1 = pd.read_csv(coinbase_path)
     df2 = pd.read_csv(bitstamp_path)
 
