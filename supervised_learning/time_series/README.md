@@ -28,3 +28,8 @@ General
     All your modules should have documentation (python3 -c 'print(__import__("my_module").__doc__)')
     All your classes should have documentation (python3 -c 'print(__import__("my_module").MyClass.__doc__)')
     All your functions (inside and outside a class) should have documentation (python3 -c 'print(__import__("my_module").my_function.__doc__)' and python3 -c 'print(__import__("my_module").MyClass.my_function.__doc__)')
+
+
+
+Given the [coinbase](https://drive.google.com/file/d/16MgiuBfQKzXPoWFWi2w-LKJuZ7LgivpE/view)  and [bitstamp](https://drive.google.com/file/d/15A-rLSrfZ0td7muSrYHy0WX9ZqrMweES/view) datasets, write a script, forecast_btc.py, that creates, trains, and validates a keras model for the forecasting of BTC:
+

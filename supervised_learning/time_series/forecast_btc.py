@@ -1,45 +1,80 @@
 #!/usr/bin/env python3
-""" Script forescast """
+""" Script to forecast BTC prices using an LSTM model """
+import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
-from tensorflow.keras.callbacks import EarlyStopping
+import matplotlib.pyplot as plt
+import os
+preprocess_data = __import__('preprocess_data').preprocess_data
 
-def create_model(input_shape):
-    model = Sequential([
-        LSTM(50, return_sequences=True, input_shape=input_shape),
-        LSTM(50),
-        Dense(1)
-    ])
-    model.compile(optimizer='adam', loss='mse')
-    return model
 
-def main():
-    # Load preprocessed data
-    X = np.load('X.npy')
-    y = np.load('y.npy')
+def create_dataset(df, sequence_length, batch_size):
+    """ Convert tf.data.Dataset """
+    data = df.values
+    x, y = [], []
+    for i in range(len(data) - sequence_length):
+        x.append(data[i:i + sequence_length])
+        y.append(data[i + sequence_length])
+    dataset = tf.data.Dataset.from_tensor_slices((x, y))
+    dataset = dataset.shuffle(buffer_size=len(x)).batch(batch_size)
+    return dataset
 
-    # Split the data into training and validation sets
-    split_idx = int(0.8 * len(X))
-    X_train, X_val = X[:split_idx], X[split_idx:]
-    y_train, y_val = y[:split_idx], y[split_idx:]
 
-    # Create tf.data.Dataset
-    train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
-    train_dataset = train_dataset.shuffle(buffer_size=1024).batch(64).prefetch(1)
+def plot_predictions(test_df, predictions, train_mean, train_std):
+    """ Function to Plot Predictions"""
+    predictions = (predictions * train_std['Close']) + train_mean['Close']
+    test_df['Close'] = \
+        (test_df['Close'] * train_std['Close']) + train_mean['Close']
 
-    val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
-    val_dataset = val_dataset.batch(64).prefetch(1)
+    plt.figure(figsize=(10, 6))
+    plt.plot(test_df.index[sequence_length:],
+             test_df['Close'][sequence_length:],
+             color='b', label='Actual Data')
+    plt.plot(test_df.index[sequence_length:],
+             predictions, color='r',
+             label='Predictions', zorder=5)
+    plt.xlabel('Date')
+    plt.ylabel('BTC Price')
+    plt.title('BTC Price Forecasting')
+    plt.legend()
+    plt.show()
 
-    # Create and train the model
-    model = create_model((X_train.shape[1], X_train.shape[2]))
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5)
 
-    model.fit(train_dataset, validation_data=val_dataset, epochs=50, callbacks=[early_stopping])
+# Load preprocessed data
+data_folder = 'data'
+coinbase_path = os.path.join(data_folder, 'coinbase.csv')
+bitstamp_path = os.path.join(data_folder, 'bitstamp.csv')
+train_df, val_df, test_df, train_mean, train_std = \
+    preprocess_data(coinbase_path, bitstamp_path)
 
-    # Save the trained model
-    model.save('btc_forecast_model.h5')
+sequence_length = 24  # Number of hours to look back for prediction
+batch_size = 64
 
-if __name__ == "__main__":
-    main()
+train_dataset = create_dataset(train_df, sequence_length, batch_size)
+val_dataset = create_dataset(val_df, sequence_length, batch_size)
+test_dataset = create_dataset(test_df, sequence_length, batch_size)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.LSTM(64, input_shape=(
+        sequence_length, train_df.shape[1]), return_sequences=True),
+    tf.keras.layers.LSTM(32),
+    tf.keras.layers.Dense(1)
+])
+
+model.compile(optimizer='adam', loss='mse')
+
+model.fit(train_dataset, validation_data=val_dataset, epochs=10)
+
+mse = model.evaluate(test_dataset)
+print(f"Test MSE: {mse}")
+
+# Make predictions
+test_data = test_df.values
+x_test = []
+for i in range(len(test_data) - sequence_length):
+    x_test.append(test_data[i:i + sequence_length])
+x_test = np.array(x_test)
+predictions = model.predict(x_test)
+
+# Plot predictions
+plot_predictions(test_df, predictions, train_mean, train_std)
