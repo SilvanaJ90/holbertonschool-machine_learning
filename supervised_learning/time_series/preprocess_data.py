@@ -10,25 +10,31 @@ data_folder = 'data'
 coinbase_path = os.path.join(data_folder, 'coinbase.csv')
 bitstamp_path = os.path.join(data_folder, 'bitstamp.csv')
 
+
 def preprocess_data(coinbase_path, bitstamp_path):
     # Load the datasets
-    df_coinbase = pd.read_csv(coinbase_path)
-    df_bitstamp = pd.read_csv(bitstamp_path)
+    df1 = pd.read_csv(coinbase_path)
+    df2 = pd.read_csv(bitstamp_path)
 
-    # Convert Unix time to datetime
-    df_coinbase['Timestamp'] = pd.to_datetime(df_coinbase['Timestamp'], unit='s')
-    df_bitstamp['Timestamp'] = pd.to_datetime(df_bitstamp['Timestamp'], unit='s')
+    # Convert 'Timestamp' to datetime
+    df1['Timestamp'] = pd.to_datetime(df1['Timestamp'], unit='s')
+    df2['Timestamp'] = pd.to_datetime(df2['Timestamp'], unit='s')
 
-    # Merge datasets on Timestamp
-    df = pd.merge(df_coinbase, df_bitstamp, on='Timestamp', suffixes=('_coinbase', '_bitstamp'))
+    # Merge the two datasets on 'Timestamp'
+    df = pd.merge(df1, df2, on='Timestamp',
+                  suffixes=('_bitstamp', '_coinbase'))
 
-    # Replace NaN values in the Close and Weighted_Price columns
+    # Replace NaN values in df1 with values from df2
     df['Close'] = df['Close_bitstamp'].combine_first(df['Close_coinbase'])
-    df['Weighted_Price'] = df['Weighted_Price_bitstamp'].combine_first(df['Weighted_Price_coinbase'])
+    df['Weighted_Price'] = df['Weighted_Price_bitstamp'].combine_first(
+        df['Weighted_Price_coinbase'])
 
     # Keep only relevant columns
     df = df[['Timestamp', 'Close', 'Weighted_Price']]
-    
+
+    # Filter for 'Timestamp' >= '2017'
+    df = df[df['Timestamp'] >= "2017"]
+
     # Set 'Timestamp' as the index and resample to hourly data
     df.set_index('Timestamp', inplace=True)
     df = df.resample('h').mean()
@@ -54,31 +60,6 @@ def preprocess_data(coinbase_path, bitstamp_path):
     print(val_df.shape)
     print(test_df.shape)
     return train_df, val_df, test_df, train_mean, train_std
-
-
-
-def create_dataset(df, sequence_length, batch_size):
-    data = df.values
-    x, y = [], []
-    for i in range(len(data) - sequence_length):
-        x.append(data[i:i + sequence_length])
-        y.append(data[i + sequence_length])
-    dataset = tf.data.Dataset.from_tensor_slices((x, y))
-    dataset = dataset.shuffle(buffer_size=len(x)).batch(batch_size)
-    return dataset
-
-def plot_predictions(test_df, predictions, train_mean, train_std):
-    predictions = (predictions * train_std['Close']) + train_mean['Close']
-    test_df['Close'] = (test_df['Close'] * train_std['Close']) + train_mean['Close']
-
-    plt.figure(figsize=(10, 6))
-    plt.plot(test_df.index[sequence_length:], test_df['Close'][sequence_length:], color='b', label='Actual Data')
-    plt.plot(test_df.index[sequence_length:], predictions, color='r', label='Predictions', zorder=5)
-    plt.xlabel('Date')
-    plt.ylabel('BTC Price')
-    plt.title('BTC Price Forecasting')
-    plt.legend()
-    plt.show()
 
 
 if __name__ == "__main__":
