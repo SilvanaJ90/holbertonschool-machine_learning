@@ -68,4 +68,7 @@ Projects:
 
 [0x25_time_series](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/time_series)
 
+[0x26_word_embeddings](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/word_embeddings)
+
+
 
