@@ -25,11 +25,6 @@ def bag_of_words(sentences, vocab=None):
     # Tokenize all sentences
     tokenized_sentences = [tokenize(sentence) for sentence in sentences]
 
-    # If vocab is not provided, create it from all unique words
-    if vocab is None:
-        vocab = sorted(
-            set(word for sentence in tokenized_sentences for word in sentence))
-
     # Create a word index dictionary for quick lookup
     word_index = {word: idx for idx, word in enumerate(vocab)}
 
