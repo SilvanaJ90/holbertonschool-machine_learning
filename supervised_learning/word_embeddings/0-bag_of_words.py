@@ -15,7 +15,10 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-    vectorizer = CountVectorizer(vocabulary=vocab)
+    if vocab is None:
+        vectorizer = CountVectorizer()
+    else:
+        vectorizer = CountVectorizer(vocabulary=vocab)
     embeddings = vectorizer.fit_transform(sentences)
     features = vectorizer.get_feature_names_out()
     return embeddings.toarray(), features
