@@ -18,9 +18,9 @@ def bag_of_words(sentences, vocab=None):
     if vocab is None:
         vectorizer = CountVectorizer()
         embeddings = vectorizer.fit_transform(sentences)
-        features= vectorizer.get_feature_names()
+        features = vectorizer.get_feature_names_out()
     else:
         vectorizer = CountVectorizer(vocabulary=vocab)
         embeddings = vectorizer.fit_transform(sentences)
-    
+
     return embeddings.toarray(), features
