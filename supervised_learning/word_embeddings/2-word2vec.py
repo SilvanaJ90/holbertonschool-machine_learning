@@ -28,12 +28,12 @@ def word2vec_model(
 
     # Create and train the Word2Vec model
     model = Word2Vec(
-        sentences,
+        sentences=sentences,
         vector_size=size,
-        min_count=min_count,
         window=window,
-        negative=negative,
+        min_count=min_count,
         sg=sg,
+        negative=negative,
         epochs=iterations,
         seed=seed,
         workers=workers

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """  that creates and trains a genism fastText model """
-import numpy as np
+from gensim.models import FastText
 
 
 def fasttext_model(sentences, size=100, min_count=5,
@@ -21,3 +21,18 @@ def fasttext_model(sentences, size=100, min_count=5,
         - workers is the number of worker threads to train the model
         Returns: the trained model
     """
+    sg = 0 if cbow else 1
+
+    model = FastText(
+        sentences=sentences,
+        vector_size=size,
+        min_count=min_count,
+        sg=sg,
+        negative=negative,
+        window=window,
+        cbow_mean=cbow,
+        epochs=iterations,
+        seed=seed,
+        workers=workers
+        )
+    return model
