@@ -11,15 +11,19 @@ def uni_bleu(references, sentence):
     Returns: the unigram BLEU score
 
     """
-    word_max_count = {}
-    for word in set(sentence):
-        for reference in references:
-            reference_word_count = reference.count(word)
-            if reference_word_count > word_max_count.get(word, 0):
-                word_max_count[word] = reference_word_count
-    min_reference_len = min(len(reference) for ref in reference)
+    precision = 0
     sentence_len = len(sentence)
-    brevity_penalty = 1 if (sentence_len > min_reference_len) \
-        else np.exp(1 - (min_reference_len / sentence_len))
+    closest_ref_len = min(len(reference) for reference in references)
 
-    return np.exp(1 - (min_reference_len / sentence_len))
+    for word in sentence:
+        max_word_count = max(reference.count(word) for reference in references)
+        precision += max_word_count
+
+    precision /= len(sentence)
+
+    brevity_penalty = 1
+    if sentence_len < closest_ref_len:
+        brevity_penalty = np.exp(1 - (closest_ref_len / sentence_len))
+
+    bleu_score = brevity_penalty * precision
+    return bleu_score
