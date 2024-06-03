@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ that creates a bag of words embedding matrix: """
 import numpy as np
-from collections import Counter
 
 
 def bag_of_words(sentences, vocab=None):
@@ -16,20 +15,24 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-    tokenized_sentences = [sentence.lower().split() for sentence in sentences]
+    word_counts = {}
+    tokenized_sentences = []
+    for sentence in sentences:
+        tokens = sentence.lower().split()
+        tokenized_sentences.append(tokens)
+        for token in tokens:
+            word_counts[token] = word_counts.get(token, 0) + 1
 
-    # Get vocabulary if not provided
+    # Create vocabulary if not provided
     if vocab is None:
-        all_words = [word for sentence in tokenized_sentences for word in sentence]
-        vocab = list(set(all_words))
+        vocab = sorted(word_counts.keys())
 
     # Initialize embeddings matrix
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
 
-    # Fill the embeddings matrix
-    for i, sentence in enumerate(tokenized_sentences):
-        word_counts = Counter(sentence)
+    # Fill embeddings matrix
+    for i, tokens in enumerate(tokenized_sentences):
         for j, word in enumerate(vocab):
-            embeddings[i, j] = word_counts[word]
+            embeddings[i, j] = tokens.count(word)
 
     return embeddings, vocab
