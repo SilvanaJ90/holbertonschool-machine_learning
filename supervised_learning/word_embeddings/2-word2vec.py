@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ that creates and trains a gensim word2vec model """
 from gensim.models import Word2Vec
-from gensim.models.word2vec import PathLineSentences
 
 
 def word2vec_model(
@@ -29,12 +28,12 @@ def word2vec_model(
 
     # Create and train the Word2Vec model
     model = Word2Vec(
-        sentences=sentences,
+        sentences,
         vector_size=size,
-        window=window,
         min_count=min_count,
-        sg=sg,
+        window=window,
         negative=negative,
+        sg=sg,
         epochs=iterations,
         seed=seed,
         workers=workers
