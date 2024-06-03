@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """  that creates a TF-IDF embedding: """
 import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def tf_idf(sentences, vocab=None):
@@ -14,3 +15,12 @@ def tf_idf(sentences, vocab=None):
             f is the number of features analyzed
         features is a list of the features used for embeddings
     """
+    tfidf_vectorizer = TfidfVectorizer(vocabulary=vocab)
+
+    # Fit the vectorizer to the sentences and transform them to TF-IDF embeddings
+    embeddings = tfidf_vectorizer.fit_transform(sentences).toarray()
+
+    # Get the vocabulary/features used for embeddings
+    features = tfidf_vectorizer.get_feature_names_out()
+
+    return embeddings, features
