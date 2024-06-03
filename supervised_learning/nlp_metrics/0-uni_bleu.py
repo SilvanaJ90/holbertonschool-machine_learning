@@ -12,20 +12,20 @@ def uni_bleu(references, sentence):
 
     """
     # Calculate precision
-    precision = 0
-    for word in sentence:
-        max_word_count = max(reference.count(word) for reference in references)
-        precision += max_word_count
-    precision /= len(sentence)
+    word_max_count = {}
+    for word in set(sentence):
+        for reference in references:
+            reference_word_count = reference.count(word)
+            if reference_word_count > word_max_count.get(word, 0):
+                word_max_count[word] = reference_word_count
+    precision = sum(word_max_count.values())
 
     # Calculate brevity penalty
     closest_ref_len = min(len(reference) for reference in references)
     sentence_len = len(sentence)
-    brevity_penalty = 1
-    if sentence_len < closest_ref_len:
-        brevity_penalty = np.exp(1 - (closest_ref_len / sentence_len))
+    brevity_penalty = 1 if sentence_len >= closest_ref_len else np.exp(1 - (closest_ref_len / sentence_len))
 
     # Calculate BLEU score
-    bleu_score = brevity_penalty * precision
+    bleu_score = precision * brevity_penalty / sentence_len
 
     return bleu_score
