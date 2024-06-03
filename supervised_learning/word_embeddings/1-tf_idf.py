@@ -17,10 +17,5 @@ def tf_idf(sentences, vocab=None):
     """
     tfidf_vectorizer = TfidfVectorizer(vocabulary=vocab)
 
-    # Fit the vectorizer to the sentences and transform them to TF-IDF embeddings
-    embeddings = tfidf_vectorizer.fit_transform(sentences).toarray()
-
-    # Get the vocabulary/features used for embeddings
-    features = tfidf_vectorizer.get_feature_names_out()
-
-    return embeddings, features
+    ouptup = tfidf_vectorizer.fit_transform(sentences)
+    return ouptup.toarray(), tfidf_vectorizer.get_feature_names_out()
