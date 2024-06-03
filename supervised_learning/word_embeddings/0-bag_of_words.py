@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ that creates a bag of words embedding matrix: """
 import numpy as np
+import re
 
 
 def bag_of_words(sentences, vocab=None):
@@ -15,24 +16,33 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-    word_counts = {}
-    tokenized_sentences = []
-    for sentence in sentences:
-        tokens = sentence.lower().split()
-        tokenized_sentences.append(tokens)
-        for token in tokens:
-            word_counts[token] = word_counts.get(token, 0) + 1
 
-    # Create vocabulary if not provided
+    def tokenize(sentence):
+        sentence = sentence.lower()
+        words = re.findall(r'\b\w+\b', sentence)
+        return words
+
+    # Tokenize all sentences
+    tokenized_sentences = [tokenize(sentence) for sentence in sentences]
+
+    # If vocab is None, build it from the sentences
     if vocab is None:
-        vocab = sorted(word_counts.keys())
+        vocab_set = set()
+        for sentence in tokenized_sentences:
+            vocab_set.update(sentence)
+        vocab = sorted(vocab_set)
 
-    # Initialize embeddings matrix
+    # Create a word index dictionary for quick lookup
+    word_index = {word: idx for idx, word in enumerate(vocab)}
+
+    # Initialize the embeddings matrix with zeros
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
 
-    # Fill embeddings matrix
-    for i, tokens in enumerate(tokenized_sentences):
-        for j, word in enumerate(vocab):
-            embeddings[i, j] = tokens.count(word)
+    # Populate the embeddings matrix
+    for i, sentence in enumerate(tokenized_sentences):
+        for word in sentence:
+            if word in word_index:
+                embeddings[i, word_index[word]] += 1
 
     return embeddings, vocab
+    
