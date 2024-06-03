@@ -70,5 +70,8 @@ Projects:
 
 [0x26_word_embeddings](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/word_embeddings)
 
+[0x27_nlp_metrics](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/nlp_metrics)
+
+
 
 
