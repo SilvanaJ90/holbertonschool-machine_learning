@@ -18,4 +18,4 @@ def tf_idf(sentences, vocab=None):
     tfidf_vectorizer = TfidfVectorizer(vocabulary=vocab)
 
     ouptup = tfidf_vectorizer.fit_transform(sentences)
-    return ouptup.toarray(), tfidf_vectorizer.get_feature_names_out()
+    return ouptup.toarray(), tfidf_vectorizer.get_feature_names()
