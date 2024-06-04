@@ -72,6 +72,8 @@ Projects:
 
 [0x27_nlp_metrics](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/nlp_metrics)
 
+[0x28_attention](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/attention)
+
 
 
 
