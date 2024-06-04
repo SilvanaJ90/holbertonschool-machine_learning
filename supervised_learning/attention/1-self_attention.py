@@ -4,7 +4,7 @@ import tensorflow as tf
 
 
 class SelfAttention(tf.keras.layers.Layer):
-    """ """
+    """ class SelfAttention """
     def __init__(self, units):
         """
         - units is an integer representing the number
