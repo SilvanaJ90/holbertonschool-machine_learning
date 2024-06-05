@@ -19,8 +19,6 @@ class RNNDecoder(tf.keras.layers.Layer):
                 - embedding - a keras Embedding layer that converts
                     words from the vocabulary into an embedding vector
                 - gru - a keras GRU layer with units units
-                    - Should return both the full sequence of outputs as well as the last hidden state
-                    - Recurrent weights should be initialized with glorot_uniform
                 - F - a Dense layer with vocab units
         """
         super(RNNDecoder, self).__init__()
@@ -32,7 +30,6 @@ class RNNDecoder(tf.keras.layers.Layer):
         self.F = tf.keras.layers.Dense(vocab)
         self.attention = SelfAttention(units)
 
-
     def call(self, x, s_prev, hidden_states):
         """
             - x is a tensor of shape (batch, 1) containing the
@@ -42,12 +39,11 @@ class RNNDecoder(tf.keras.layers.Layer):
             containing the previous decoder hidden state
             - hidden_states is a tensor of shape (batch,
             input_seq_len, units)containing the outputs of the encoder
-            - You should use SelfAttention = __import__('1-self_attention').SelfAttention
             - You should concatenate the context vector with x in that order
             - Returns: y, s
         - y is a tensor of shape (batch, vocab) containing
             the output word as a one hot vector in the target vocabulary
-        - s is a tensor of shape (batch, units) containing the new decoder hidden state
+        - s is a tensor of shape (batch, units)
         """
         context, _ = self.attention(s_prev, hidden_states)
         x = self.embedding(x)
