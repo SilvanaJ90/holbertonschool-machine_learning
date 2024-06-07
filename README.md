@@ -74,6 +74,9 @@ Projects:
 
 [0x28_attention](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/attention)
 
+[0x29_transformer_apps](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/transformer_apps)
+
+
 
 
 
