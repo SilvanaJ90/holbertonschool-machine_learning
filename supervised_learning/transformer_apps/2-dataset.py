@@ -45,3 +45,37 @@ class Dataset:
             en_sentences, target_vocab_size=2**15)
 
         return pt, en
+
+    def encode(self, pt, en):
+        """
+            that encodes a translation into tokens:
+            - pt is the tf.Tensor containing the Portuguese sentence
+            - en is the tf.Tensor containing the corresponding English sentence
+            - The tokenized sentences should include
+                the start and end of sentence tokens
+            The start token should be indexed as vocab_size
+            The end token should be indexed as vocab_size + 1
+                Returns: pt_tokens, en_tokens
+                    pt_tokens is a np.ndarray containing the Portuguese tokens
+                en_tokens is a np.ndarray. containing the English tokens
+
+        """
+        pt_size = self.tokenizer_pt.vocab_size
+        en_size = self.tokenizer_en.vocab_size
+        pt_tokens = self.tokenizer_pt.encode(pt.numpy())
+        en_tokens = self.tokenizer_en.encode(en.numpy())
+        pt_tokens = [pt_size] + pt_tokens + [pt_size + 1]
+        en_tokens = [en_size] + en_tokens + [en_size + 1]
+        return pt_tokens, en_tokens
+
+    def tf_encode(self, pt, en):
+        """
+            that acts as a tensorflow wrapper for the encode instance method
+            Make sure to set the shape of the pt and en return tensors
+        """
+        pt_tokens, en_tokens = tf.py_funtion(
+            self.encode,
+            [pt, en], [tf.int64, tf.int64])
+        pt_tokens.set_shape([None])
+        en_tokens.set_shape([None])
+        return pt_tokens, en_tokens
