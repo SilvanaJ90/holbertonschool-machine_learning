@@ -43,22 +43,22 @@ class Simple_GAN(keras.Model):
         self.discriminator.compile(
             optimizer=discriminator.optimizer, loss=discriminator.loss)
 
-    # generator of real samples of size batch_size
     def get_fake_sample(self, size=None, training=False):
+        """ generator of real samples of size batch_size"""
         if not size:
             size = self.batch_size
         return self.generator(self.latent_generator(size), training=training)
 
-    # generator of fake samples of size batch_size
     def get_real_sample(self, size=None):
+        """ generator of fake samples of size batch_size """
         if not size:
             size = self.batch_size
         sorted_indices = tf.range(tf.shape(self.real_examples)[0])
         random_indices = tf.random.shuffle(sorted_indices)[:size]
         return tf.gather(self.real_examples, random_indices)
 
-    # overloading train_step()
     def train_step(self, useless_argument):
+        """ overloading train_step()"""
         for _ in range(self.disc_iter):
             # Compute the loss for the discriminator in a
             # tape watching the discriminator's weights
