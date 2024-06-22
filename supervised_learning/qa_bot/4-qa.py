@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """ answers questions from multiple reference texts: """
 semantic_search = __import__('3-semantic_search').semantic_search
+question_answer = __import__('0-qa').question_answer
 
 
-def question_answer(coprus_path):
+def qa(coprus_path): 
     """
     corpus_path is the path to the corpus of reference documents
     """
@@ -14,7 +15,7 @@ def question_answer(coprus_path):
             print('A: Goodbye')
             break
         else:
-            reference = semantic_search(coprus_path)
+            reference = semantic_search(coprus_path, question)
             answer = question_answer(question, reference)
             if answer is None or answer == '':
                 print('A: Sorry, I do not understand your question.')
