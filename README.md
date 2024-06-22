@@ -76,6 +76,10 @@ Projects:
 
 [0x29_transformer_apps](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/transformer_apps)
 
+[0x30_gan](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/unsupervised_learning/gan)
+
+[0x31_qa_bot](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/qa_bot)
+
 
 
 
