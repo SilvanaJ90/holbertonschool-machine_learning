@@ -10,6 +10,7 @@ from transformers import BertTokenizer
 
 def question_answer(question, reference):
     """
+    Doc
     """
     tokenizer = BertTokenizer.from_pretrained(
         'bert-large-uncased-whole-word-masking-finetuned-squad')
