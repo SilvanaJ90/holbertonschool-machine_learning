@@ -1,31 +1,31 @@
 #!/usr/bin/env python3
 """ Doc """
-import numpy as np
 import tensorflow.keras as K
-import cv2
+import numpy as np
 import os
+import cv2
 
 
 class Yolo:
-    """Yolo class for object detection"""
+    """ Doc """
     def __init__(self, model_path, classes_path, class_t, nms_t, anchors):
-        """Initializes the Yolo class"""
+        """ The initializes the Yolo class """
         self.class_t = class_t
         self.nms_t = nms_t
         self.model = K.models.load_model(model_path)
         self.anchors = anchors
         with open(classes_path) as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        self.input_h = self.model.input.shape[1]
-        self.input_w = self.model.input.shape[2]
 
     @staticmethod
     def sigmoid(x):
-        """Applies the sigmoid function"""
-        return 1 / (1 + np.exp(-x))
+        """
+            Doc
+        """
+        return (1. / (1. + np.exp(-x)))
 
     def process_outputs(self, outputs, image_size):
-        """Processes the outputs"""
+        """ Doc """
         boxes = []
         box_confidences = []
         box_class_probs = []
@@ -49,7 +49,9 @@ class Yolo:
             b_wh = anchors * np.exp(t_wh)
             b_wh /= self.model.input.shape.as_list()[1:3]
 
-            grid = np.tile(np.indices((g_w, g_h)).T, anchors.shape[0]).reshape((g_h, g_w) + anchors.shape)
+            grid = np.tile(np.indices(
+                (g_w, g_h)).T,
+                anchors.shape[0]).reshape((g_h, g_w) + anchors.shape)
 
             b_xy = (self.sigmoid(t_xy) + grid) / [g_w, g_h]
 
@@ -63,7 +65,7 @@ class Yolo:
         return boxes, box_confidences, box_class_probs
 
     def filter_boxes(self, boxes, box_confidences, box_class_probs):
-        """Filters boxes based on class scores"""
+        """ Doc """
         filtered_boxes = []
         box_classes = []
         box_scores = []
@@ -83,7 +85,25 @@ class Yolo:
             box_classes.append(bc1[idx])
             box_scores.append(bcs[idx])
 
-        return np.concatenate(filtered_boxes), np.concatenate(box_classes), np.concatenate(box_scores)
+        return np.concatenate(
+            filtered_boxes), np.concatenate(
+                box_classes), np.concatenate(box_scores)
+
+    def iou(self, box1, box2):
+        """Calculates the Intersection over
+        Union (IoU) of two bounding boxes"""
+        xi1 = max(box1[0], box2[0])
+        yi1 = max(box1[1], box2[1])
+        xi2 = min(box1[2], box2[2])
+        yi2 = min(box1[3], box2[3])
+        inter_area = max(xi2 - xi1, 0) * max(yi2 - yi1, 0)
+
+        box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+        box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+        union_area = box1_area + box2_area - inter_area
+
+        iou = inter_area / union_area
+        return iou
 
     def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
         """Performs non-maximum suppression"""
@@ -120,8 +140,11 @@ class Yolo:
                     yi2 = min(b[maximum, 3], b[idx, 3])
                     inter_area = max(xi2 - xi1, 0) * max(yi2 - yi1, 0)
 
-                    box1_area = (b[maximum, 2] - b[maximum, 0]) * (b[maximum, 3] - b[maximum, 1])
-                    box2_area = (b[idx, 2] - b[idx, 0]) * (b[idx, 3] - b[idx, 1])
+                    box1_area = (
+                        b[maximum, 2] - b[maximum, 0]) * (
+                            b[maximum, 3] - b[maximum, 1])
+                    box2_area = (
+                        b[idx, 2] - b[idx, 0]) * (b[idx, 3] - b[idx, 1])
                     union_area = box1_area + box2_area - inter_area
 
                     ious[i] = inter_area / union_area
@@ -136,7 +159,13 @@ class Yolo:
 
     @staticmethod
     def load_images(folder_path):
-        """Loads images from a folder"""
+        """
+        - folder_path: a string representing the
+            path to the folder holding all the images to load
+        Returns a tuple of (images, image_paths):
+            images: a list of images as numpy.ndarrays
+            image_paths: a list of paths to the individual images in images
+        """
         images = []
         image_paths = []
 
@@ -149,6 +178,7 @@ class Yolo:
 
         return images, image_paths
 
+
     def preprocess_images(self, images):
         """Preprocesses images for the YOLO model"""
         input_h, input_w = self.input_h, self.input_w
@@ -160,11 +190,6 @@ class Yolo:
             resized_image = cv2.resize(image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
             pimage = resized_image / 255.0
             pimages.append(pimage)
-
-            # Optional: Display the preprocessed image
-            cv2.imshow('Preprocessed Image', pimage)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
 
         pimages = np.array(pimages)
         image_shapes = np.array(image_shapes)
