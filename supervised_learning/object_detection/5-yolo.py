@@ -180,18 +180,18 @@ class Yolo:
 
     def preprocess_images(self, images):
         """Preprocesses images for the YOLO model"""
-        input_h = self.model.input.shape[2].value
-        input_w = self.model.input.shape[1].value
+    
         pimages = []
         image_shapes = []
+        input_h = self.model.input.shape[2].value
+        input_w = self.model.input.shape[1].value
 
         for image in images:
             image_shapes.append(image.shape[:2])
-            resized_image = cv2.resize(image, dsize=(input_w, input_h),
+            resized = cv2.resize(image, dsize=(input_w, input_h),
                                  interpolation=cv2.INTER_CUBIC)
-            pimage = resized_image / 255.0
-            pimages.append(pimage)
-
+            rescaled = resized / 255
+            pimages.append(rescaled)
         pimages = np.array(pimages)
         image_shapes = np.array(image_shapes)
 
