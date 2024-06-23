@@ -108,33 +108,51 @@ class Yolo:
         predicted_box_classes = []
         predicted_box_scores = []
 
-        unique_classes = np.unique(box_classes)
+        classes = np.unique(box_classes)
 
-        for cls in unique_classes:
-            cls_indices = np.where(box_classes == cls)
-            cls_boxes = filtered_boxes[cls_indices]
-            cls_scores = box_scores[cls_indices]
+        for c in classes:
+            idx = np.where(box_classes == c)
+            b = filtered_boxes[idx]
+            bc1 = box_classes[idx]
+            bs = box_scores[idx]
 
-            sorted_indices = np.argsort(cls_scores)[::-1]
-            while len(sorted_indices) > 0:
-                best_idx = sorted_indices[0]
-                best_box = cls_boxes[best_idx]
-                best_score = cls_scores[best_idx]
+            ordered_indices = np.flip(bs.argsort(), axis=0)
 
-                box_predictions.append(best_box)
-                predicted_box_classes.append(cls)
-                predicted_box_scores.append(best_score)
+            keep_indices = []
 
-                sorted_indices = sorted_indices[1:]
+            while len(ordered_indices) > 0:
+                maximum = ordered_indices[0]
+                keep_indices.append(maximum)
+                if len(ordered_indices) == 1:
+                    break
+
+                remaining = ordered_indices[1:]
+
                 suppressed_indices = []
+                for i in remaining:
+                    xi1 = max(b[maximum, 0], b[i, 0])
+                    yi1 = max(b[maximum, 1], b[i, 1])
+                    xi2 = min(b[maximum, 2], b[i, 2])
+                    yi2 = min(b[maximum, 3], b[i, 3])
+                    inter_area = max(xi2 - xi1, 0) * max(yi2 - yi1, 0)
 
-                for idx in sorted_indices:
-                    iou = self.iou(best_box, cls_boxes[idx])
+                    box1_area = (b[maximum, 2] - b[maximum, 0]) * (b[maximum, 3] - b[maximum, 1])
+                    box2_area = (b[i, 2] - b[i, 0]) * (b[i, 3] - b[i, 1])
+                    union_area = box1_area + box2_area - inter_area
+
+                    iou = inter_area / union_area
+
                     if iou > self.nms_t:
-                        suppressed_indices.append(idx)
+                        suppressed_indices.append(i)
 
-                sorted_indices = np.setdiff1d(sorted_indices, suppressed_indices)
+                ordered_indices = np.setdiff1d(remaining, suppressed_indices)
 
-        return (np.array(box_predictions), 
-                np.array(predicted_box_classes), 
-                np.array(predicted_box_scores))
+            box_predictions.append(b[keep_indices])
+            predicted_box_classes.append(bc1[keep_indices])
+            predicted_box_scores.append(bs[keep_indices])
+
+        box_predictions = np.concatenate(box_predictions, axis=0)
+        predicted_box_classes = np.concatenate(predicted_box_classes, axis=0)
+        predicted_box_scores = np.concatenate(predicted_box_scores, axis=0)
+
+        return box_predictions, predicted_box_classes, predicted_box_scores
