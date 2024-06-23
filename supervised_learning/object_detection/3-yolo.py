@@ -88,7 +88,8 @@ class Yolo:
                 box_classes), np.concatenate(box_scores)
 
     def iou(self, box1, box2):
-        """Calculates the Intersection over Union (IoU) of two bounding boxes"""
+        """Calculates the Intersection over
+        Union (IoU) of two bounding boxes"""
         xi1 = max(box1[0], box2[0])
         yi1 = max(box1[1], box2[1])
         xi2 = min(box1[2], box2[2])
@@ -137,8 +138,11 @@ class Yolo:
                     yi2 = min(b[maximum, 3], b[idx, 3])
                     inter_area = max(xi2 - xi1, 0) * max(yi2 - yi1, 0)
 
-                    box1_area = (b[maximum, 2] - b[maximum, 0]) * (b[maximum, 3] - b[maximum, 1])
-                    box2_area = (b[idx, 2] - b[idx, 0]) * (b[idx, 3] - b[idx, 1])
+                    box1_area = (
+                        b[maximum, 2] - b[maximum, 0]) * (
+                            b[maximum, 3] - b[maximum, 1])
+                    box2_area = (
+                        b[idx, 2] - b[idx, 0]) * (b[idx, 3] - b[idx, 1])
                     union_area = box1_area + box2_area - inter_area
 
                     ious[i] = inter_area / union_area
