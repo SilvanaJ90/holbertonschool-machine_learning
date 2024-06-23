@@ -161,6 +161,11 @@ class Yolo:
             pimage = resized_image / 255.0
             pimages.append(pimage)
 
+            # Optional: Display the preprocessed image
+            cv2.imshow('Preprocessed Image', pimage)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
         pimages = np.array(pimages)
         image_shapes = np.array(image_shapes)
 
