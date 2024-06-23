@@ -157,7 +157,7 @@ class Yolo:
         return images, image_paths
 
     def preprocess_images(self, images):
-        """ Doc """
+        """Preprocesses a list of images for YOLO model"""
         input_h, input_w = self.input_h, self.input_w
         pimages = []
         image_shapes = []

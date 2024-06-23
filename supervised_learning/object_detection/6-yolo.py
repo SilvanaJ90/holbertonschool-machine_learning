@@ -3,6 +3,7 @@
 import tensorflow.keras as K
 import numpy as np
 import os
+from google.colab.patches import cv2_imshow
 import cv2
 
 
@@ -179,7 +180,7 @@ class Yolo:
         return images, image_paths
 
     def preprocess_images(self, images):
-        """ Doc """
+        """Preprocesses a list of images for YOLO model"""
         input_h, input_w = self.input_h, self.input_w
         pimages = []
         image_shapes = []
@@ -195,3 +196,37 @@ class Yolo:
         image_shapes = np.array(image_shapes)
 
         return pimages, image_shapes
+
+    def show_boxes(self, image, boxes, box_classes, box_scores, file_name):
+        """Displays the image with boxes, class names, and scores"""
+        img_cp = image.copy()
+
+        for i in range(len(boxes)):
+            x1, y1, x2, y2 = boxes[i]
+            class_index = box_classes[i]
+            class_name = self.class_names[class_index]
+            score = box_scores[i]
+
+            # Draw box
+            cv2.rectangle(img_cp, (
+                int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
+
+            # Write class name and score
+            text = f"{class_name} {score:.2f}"
+            cv2.putText(
+                img_cp, text, (
+                    int(x1), int(
+                        y1) - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (
+                            0, 0, 255), 1, cv2.LINE_AA)
+
+        cv2_imshow(img_cp)
+        key = cv2.waitKey(0)
+
+        if key == ord('s'):
+            output_dir = 'detections'
+            os.makedirs(output_dir, exist_ok=True)
+            output_path = os.path.join(output_dir, file_name)
+            cv2.imwrite(output_path, img_cp)
+            cv2.destroyAllWindows()
+        else:
+            cv2.destroyAllWindows()
