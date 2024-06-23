@@ -118,41 +118,35 @@ class Yolo:
 
             ordered_indices = np.flip(bs.argsort(), axis=0)
 
-            keep_indices = []
-
             while len(ordered_indices) > 0:
                 maximum = ordered_indices[0]
-                keep_indices.append(maximum)
+                box_predictions.append(b[maximum])
+                predicted_box_classes.append(bc1[maximum])
+                predicted_box_scores.append(bs[maximum])
+
                 if len(ordered_indices) == 1:
                     break
 
                 remaining = ordered_indices[1:]
 
-                suppressed_indices = []
-                for i in remaining:
-                    xi1 = max(b[maximum, 0], b[i, 0])
-                    yi1 = max(b[maximum, 1], b[i, 1])
-                    xi2 = min(b[maximum, 2], b[i, 2])
-                    yi2 = min(b[maximum, 3], b[i, 3])
+                ious = np.zeros((len(remaining)))
+                for i, idx in enumerate(remaining):
+                    xi1 = max(b[maximum, 0], b[idx, 0])
+                    yi1 = max(b[maximum, 1], b[idx, 1])
+                    xi2 = min(b[maximum, 2], b[idx, 2])
+                    yi2 = min(b[maximum, 3], b[idx, 3])
                     inter_area = max(xi2 - xi1, 0) * max(yi2 - yi1, 0)
 
                     box1_area = (b[maximum, 2] - b[maximum, 0]) * (b[maximum, 3] - b[maximum, 1])
-                    box2_area = (b[i, 2] - b[i, 0]) * (b[i, 3] - b[i, 1])
+                    box2_area = (b[idx, 2] - b[idx, 0]) * (b[idx, 3] - b[idx, 1])
                     union_area = box1_area + box2_area - inter_area
 
-                    iou = inter_area / union_area
+                    ious[i] = inter_area / union_area
 
-                    if iou > self.nms_t:
-                        suppressed_indices.append(i)
+                ordered_indices = remaining[ious <= self.nms_t]
 
-                ordered_indices = np.setdiff1d(remaining, suppressed_indices)
-
-            box_predictions.append(b[keep_indices])
-            predicted_box_classes.append(bc1[keep_indices])
-            predicted_box_scores.append(bs[keep_indices])
-
-        box_predictions = np.concatenate(box_predictions, axis=0)
-        predicted_box_classes = np.concatenate(predicted_box_classes, axis=0)
-        predicted_box_scores = np.concatenate(predicted_box_scores, axis=0)
+        box_predictions = np.array(box_predictions)
+        predicted_box_classes = np.array(predicted_box_classes)
+        predicted_box_scores = np.array(predicted_box_scores)
 
         return box_predictions, predicted_box_classes, predicted_box_scores
