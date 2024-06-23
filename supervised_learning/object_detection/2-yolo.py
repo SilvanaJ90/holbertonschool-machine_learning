@@ -83,4 +83,4 @@ class Yolo:
             box_classes.append(bc1[idx])
             box_scores.append(bcs[idx])
 
-        return filtered_boxes, box_classes, box_scores
+        return np.concatenate(filtered_boxes), np.concatenate(box_classes), np.concatenate(box_scores)
