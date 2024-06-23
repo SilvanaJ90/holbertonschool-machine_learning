@@ -77,7 +77,7 @@ class Yolo:
             bcs = np.max(bs, axis=-1)
             bc1 = np.argmax(bs, axis=-1)
 
-            idx = np.where(bcs > self.class_t)
+            idx = np.where(bcs >= self.class_t)
 
             filtered_boxes.append(b[idx])
             box_classes.append(bc1[idx])
