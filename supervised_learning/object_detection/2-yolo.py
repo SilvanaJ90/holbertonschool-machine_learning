@@ -62,31 +62,25 @@ class Yolo:
 
         return boxes, box_confidences, box_class_probs
 
-    
-
     def filter_boxes(self, boxes, box_confidences, box_class_probs):
         """ Doc """
         filtered_boxes = []
         box_classes = []
         box_scores = []
 
-        for i in range(len(boxes)):
-            box_conf = box_confidences[i]
-            box_prob = box_class_probs[i]
+        for i, b in enumerate(boxes):
+            bc = box_confidences[i]
+            bcp = box_class_probs[i]
 
-            box_conf = np.squeeze(box_conf, axis=-1)  # Remove singleton dimension
-            box_scores.extend(box_conf * np.max(box_prob, axis=-1))
-            box_class = np.argmax(box_prob, axis=-1).flatten()
-            box_classes.extend(box_class)
-            
-            mask = box_conf >= self.class_t
-            if np.any(mask):  # Check if there are any boxes passing the threshold
-                box_conf = np.extract(mask, box_conf)
-                box = np.extract(mask, boxes[i]).reshape(-1, 4)
-                filtered_boxes.extend(box)
+            bs = bc * bcp
 
-        box_scores = np.array(box_scores)
-        box_classes = np.array(box_classes)
-        filtered_boxes = np.array(filtered_boxes)
+            bcs = np.max(bs, axis=-1)
+            bc1 = np.argmax(bs, axis=-1)
+
+            idx = np.where(bcs > self.class_t)
+
+            filtered_boxes.append(b[idx])
+            box_classes.append(bc1[idx])
+            box_scores.append(bcs[idx])
 
         return filtered_boxes, box_classes, box_scores
