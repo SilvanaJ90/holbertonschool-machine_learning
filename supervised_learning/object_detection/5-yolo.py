@@ -157,7 +157,6 @@ class Yolo:
         return images, image_paths
 
     def preprocess_images(self, images):
-        """Preprocesses images for the YOLO model"""
         input_h, input_w = self.input_h, self.input_w
         pimages = []
         image_shapes = []
@@ -166,7 +165,7 @@ class Yolo:
             image_shapes.append(image.shape[:2])
             resized_image = cv2.resize(
                 image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
-            pimage = resized_image / 255.0
+            pimage = resized_image / 255.0  # Normalización aquí
             pimages.append(pimage)
 
         pimages = np.array(pimages)
