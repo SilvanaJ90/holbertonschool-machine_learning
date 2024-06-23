@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow.keras as K
 import cv2
 import os
-from google.colab.patches import cv2_imshow
+
 
 class Yolo:
     """Yolo class for object detection"""
