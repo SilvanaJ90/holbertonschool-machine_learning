@@ -88,8 +88,7 @@ class Yolo:
                 box_classes), np.concatenate(box_scores)
 
     def iou(self, box1, box2):
-        """Calculates the Intersection over Union
-        (IoU) of two bounding boxes"""
+        """Calculates the Intersection over Union (IoU) of two bounding boxes"""
         xi1 = max(box1[0], box2[0])
         yi1 = max(box1[1], box2[1])
         xi2 = min(box1[2], box2[2])
@@ -117,7 +116,6 @@ class Yolo:
             cls_scores = box_scores[cls_indices]
 
             sorted_indices = np.argsort(cls_scores)[::-1]
-
             while len(sorted_indices) > 0:
                 best_idx = sorted_indices[0]
                 best_box = cls_boxes[best_idx]
@@ -135,9 +133,8 @@ class Yolo:
                     if iou > self.nms_t:
                         suppressed_indices.append(idx)
 
-                sorted_indices = np.setdiff1d(
-                    sorted_indices, suppressed_indices)
+                sorted_indices = np.setdiff1d(sorted_indices, suppressed_indices)
 
-        return (np.array(box_predictions),
-                np.array(predicted_box_classes),
+        return (np.array(box_predictions), 
+                np.array(predicted_box_classes), 
                 np.array(predicted_box_scores))
