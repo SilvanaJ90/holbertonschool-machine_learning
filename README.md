@@ -80,6 +80,8 @@ Projects:
 
 [0x31_qa_bot](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/supervised_learning/qa_bot)
 
+[0x32_q_learning](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/q_learning)
+
 
 
 
