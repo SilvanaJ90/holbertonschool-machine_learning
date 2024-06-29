@@ -82,6 +82,8 @@ Projects:
 
 [0x32_q_learning](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/q_learning)
 
+[0x33_deep_q_learning](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/deep_q_learning)
+
 
 
 
