@@ -20,10 +20,11 @@ def bag_of_words(sentences, vocab=None):
     vectorizer = CountVectorizer()
 
     if vocab is None:
-        embeddings = vectorizer.fit_transform(sentences).toarray()
+        x = vectorizer.fit_transform(sentences)
         vocab = vectorizer.get_feature_names_out()
     else:
         vectorizer = CountVectorizer(vocabulary=vocab)
-        embeddings = vectorizer.fit_transform(sentences).toarray()
+        x = vectorizer.fit_transform(sentences)
     
+    embeddings = x.toarray()
     return embeddings, vocab
