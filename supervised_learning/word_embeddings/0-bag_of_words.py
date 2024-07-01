@@ -25,6 +25,8 @@ def bag_of_words(sentences, vocab=None):
     tokenized_sentences = [tokenize(sentence) for sentence in sentences]
 
     # If vocab is None, build it from the sentences
+    if vocab is None:
+        return all(vocab)
 
     # Create a word index dictionary for quick lookup
     word_index = {word: idx for idx, word in enumerate(vocab)}
