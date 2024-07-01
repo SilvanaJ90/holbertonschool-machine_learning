@@ -16,28 +16,22 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-    def tokenize(sentence):
-        sentence = sentence.lower()
-        words = re.findall(r'\b\w+\b', sentence)
-        return words
-
-    # Tokenize all sentences
-    tokenized_sentences = [tokenize(sentence) for sentence in sentences]
-
-    # If vocab is None, build it from the sentences
     if vocab is None:
-        return all(vocab)
-
-    # Create a word index dictionary for quick lookup
-    word_index = {word: idx for idx, word in enumerate(vocab)}
-
-    # Initialize the embeddings matrix with zeros
-    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
-
-    # Populate the embeddings matrix
-    for i, sentence in enumerate(tokenized_sentences):
-        for word in sentence:
-            if word in word_index:
-                embeddings[i, word_index[word]] += 1
-
-    return embeddings, vocab
+        vocab = set()
+        for sentence in sentences:
+            words = re.findall(r'\b\w+\b', sentence.lower())
+            vocab.update(words)
+        vocab = sorted(vocab)
+    
+    features = vocab
+    embeddings = np.zeros((len(sentences), len(features)), dtype=int)
+    
+    word_to_index = {word: i for i, word in enumerate(features)}
+    
+    for i, sentence in enumerate(sentences):
+        words = re.findall(r'\b\w+\b', sentence.lower())
+        for word in words:
+            if word in word_to_index:
+                embeddings[i][word_to_index[word]] += 1
+    
+    return embeddings, features
