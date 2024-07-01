@@ -31,7 +31,6 @@ def bag_of_words(sentences, vocab=None):
         for sentence in tokenized_sentences:
             vocab_set.update(sentence)
         vocab = sorted(vocab_set)
-        
 
     # Create a word index dictionary for quick lookup
     word_index = {word: idx for idx, word in enumerate(vocab)}
