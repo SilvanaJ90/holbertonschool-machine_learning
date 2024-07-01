@@ -19,7 +19,8 @@ def bag_of_words(sentences, vocab=None):
     if vocab is None:
         vocab = set()
         for sentence in sentences:
-            words = re.findall(r'\b\w+\b', sentence.lower())
+            # Updated regex to avoid splitting possessive forms incorrectly
+            words = re.findall(r"\b\w+(?:'\w+)?\b", sentence.lower())
             vocab.update(words)
         vocab = sorted(vocab)
     
@@ -29,7 +30,8 @@ def bag_of_words(sentences, vocab=None):
     word_to_index = {word: i for i, word in enumerate(features)}
     
     for i, sentence in enumerate(sentences):
-        words = re.findall(r'\b\w+\b', sentence.lower())
+        # Updated regex to avoid splitting possessive forms incorrectly
+        words = re.findall(r"\b\w+(?:'\w+)?\b", sentence.lower())
         for word in words:
             if word in word_to_index:
                 embeddings[i][word_to_index[word]] += 1
