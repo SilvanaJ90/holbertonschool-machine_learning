@@ -25,7 +25,7 @@ def resnet50():
         padding='same',
         strides=(2, 2),
         kernel_initializer=he_normal_input)(inputs)
-    
+
     # BatchNormalization
     BN = K.layers.BatchNormalization(axis=3)(CV2D)
 
