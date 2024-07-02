@@ -15,39 +15,40 @@ def resnet50():
     All weights should use he normal initialization
     Returns: the keras model
     """
-    inputs = K.layers.Input(shape=(224, 224, 3))
-    he_normal = K.initializers.he_normal()
+    inputs = K.Input(shape=(224, 224, 3))
+    he_normal_input = K.initializers.he_normal()
 
     # Convolutional layer 1
-    X = K.layers.Conv2D(
-        64,
-        (7, 7),
+    CV2D = K.layers.Conv2D(
+        filters=64,
+        kernel_size=(7, 7),
         padding='same',
         strides=2,
-        kernel_initializer=he_normal)(inputs)
-    
-    X = K.layers.BatchNormalization(axis=3)(X)
+        kernel_initializer=he_normal_input)(inputs)
+
+    # BatchNormalization
+    BN = K.layers.BatchNormalization(axis=3)(CV2D)
 
     # Action
-    X = K.layers.ReLU()(X)
+    AT = K.layers.ReLU()(BN)
 
-    X = K.layers.MaxPool2D(pool_size=(3, 3),
-                           padding='same',
-                           strides=2)(X)
+    MX = K.layers.MaxPool2D(pool_size=(3, 3),
+                            padding='same',
+                            strides=2)(AT)
 
-    X = projection_block(X, [64, 64, 256], s=1)
+    X = projection_block(MX, [64, 64, 256], 1)
     for i in range(2):
         X = identity_block(X, [64, 64, 256])
 
-    X = projection_block(X, [128, 128, 512], s=1)
+    X = projection_block(X, [128, 128, 512])
     for i in range(3):
         X = identity_block(X, [128, 128, 512])
 
-    X = projection_block(X, [256, 256, 1024], s=1)
+    X = projection_block(X, [256, 256, 1024])
     for i in range(5):
         X = identity_block(X, [256, 256, 1024])
 
-    X = projection_block(X, [512, 512, 2048], s=1)
+    X = projection_block(X, [512, 512, 2048])
     for i in range(2):
         X = identity_block(X, [512, 512, 2048])
 
@@ -57,8 +58,8 @@ def resnet50():
 
     # Output layer
     output = K.layers.Dense(1000, activation='softmax',
-                            kernel_initializer=he_normal)(X)
+                            kernel_initializer=he_normal_input)(X)
 
-    model = K.Model(inputs=inputs, outputs=output)
+    model = K.models.Model(inputs=inputs, outputs=output)
 
     return model
