@@ -16,16 +16,16 @@ def resnet50():
     Returns: the keras model
     """
     inputs = K.Input(shape=(224, 224, 3))
-    he_normal_input = K.initializers.he_normal()
+    he_normal_input = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     CV2D = K.layers.Conv2D(
         filters=64,
         kernel_size=(7, 7),
         padding='same',
-        strides=2,
+        strides=(2, 2),
         kernel_initializer=he_normal_input)(inputs)
-
+    
     # BatchNormalization
     BN = K.layers.BatchNormalization(axis=3)(CV2D)
 
@@ -34,7 +34,7 @@ def resnet50():
 
     MX = K.layers.MaxPool2D(pool_size=(3, 3),
                             padding='same',
-                            strides=2)(AT)
+                            strides=(2, 2),)(AT)
 
     X = projection_block(MX, [64, 64, 256], 1)
     for i in range(2):
