@@ -20,12 +20,20 @@ def resnet50():
 
     # Convolutional layer 1
     X = K.layers.Conv2D(
-        64, (7, 7),
+        64,
+        (7, 7),
+        padding='same',
+        strides=2,
         kernel_initializer=he_normal)(inputs)
+    
     X = K.layers.BatchNormalization(axis=3)(X)
-    X = K.layers.Activation('relu')(X)
 
-    X = K.layers.MaxPool2D(pool_size=(3, 3))(X)
+    # Action
+    X = K.layers.ReLU()(X)
+
+    X = K.layers.MaxPool2D(pool_size=(3, 3),
+                           padding='same',
+                           strides=2)(X)
 
     X = projection_block(X, [64, 64, 256], s=1)
     for i in range(2):
@@ -44,6 +52,7 @@ def resnet50():
         X = identity_block(X, [512, 512, 2048])
 
     X = K.layers.AveragePooling2D(pool_size=(7, 7),
+                                  padding='valid',
                                   strides=(1, 1))(X)
 
     # Output layer
