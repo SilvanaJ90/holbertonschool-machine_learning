@@ -15,45 +15,39 @@ def resnet50():
     All weights should use he normal initialization
     Returns: the keras model
     """
-    he_normal_init = K.initializers.he_normal(seed=0)
+    inputs = K.layers.Input(shape=(224, 224, 3))
+    he_normal = K.initializers.he_normal()
 
-    input_layer = K.layers.Input(shape=(224, 224, 3))
+    # Convolutional layer 1
+    X = K.layers.Conv2D(
+        64, (7, 7),
+        kernel_initializer=he_normal)(inputs)
+    X = K.layers.BatchNormalization(axis=3)(X)
+    X = K.layers.Activation('relu')(X)
 
-    # Initial Convolutional Layer
-    x = K.layers.Conv2D(64, (7, 7), strides=(2, 2), padding='same', kernel_initializer=he_normal_init)(input_layer)
-    x = K.layers.BatchNormalization(axis=3)(x)
-    x = K.layers.Activation('relu')(x)
-    x = K.layers.MaxPooling2D((3, 3), strides=(2, 2), padding='same')(x)
+    X = projection_block(X, [64, 64, 256], s=1)
+    for i in range(2):
+        X = identity_block(X, [64, 64, 256])
 
-    # Stage 1
-    x = projection_block(x, (64, 64, 256), s=1)
-    x = identity_block(x, (64, 64, 256))
-    x = identity_block(x, (64, 64, 256))
+    X = projection_block(X, [128, 128, 512], s=1)
+    for i in range(3):
+        X = identity_block(X, [128, 128, 512])
 
-    # Stage 2
-    x = projection_block(x, (128, 128, 512))
-    x = identity_block(x, (128, 128, 512))
-    x = identity_block(x, (128, 128, 512))
-    x = identity_block(x, (128, 128, 512))
+    X = projection_block(X, [256, 256, 1024], s=1)
+    for i in range(5):
+        X = identity_block(X, [256, 256, 1024])
 
-    # Stage 3
-    x = projection_block(x, (256, 256, 1024))
-    x = identity_block(x, (256, 256, 1024))
-    x = identity_block(x, (256, 256, 1024))
-    x = identity_block(x, (256, 256, 1024))
-    x = identity_block(x, (256, 256, 1024))
-    x = identity_block(x, (256, 256, 1024))
+    X = projection_block(X, [512, 512, 2048], s=1)
+    for i in range(2):
+        X = identity_block(X, [512, 512, 2048])
 
-    # Stage 4
-    x = projection_block(x, (512, 512, 2048))
-    x = identity_block(x, (512, 512, 2048))
-    x = identity_block(x, (512, 512, 2048))
+    X = K.layers.AveragePooling2D(pool_size=(7, 7),
+                                  strides=(1, 1))(X)
 
-    # Average Pooling and Fully Connected Layer
-    x = K.layers.GlobalAveragePooling2D()(x)
-    x = K.layers.Dense(1000, activation='softmax')(x)  # Adjust the number of classes as needed
+    # Output layer
+    output = K.layers.Dense(1000, activation='softmax',
+                            kernel_initializer=he_normal)(X)
 
-    # Create Model
-    model = K.models.Model(inputs=input_layer, outputs=x)
-    
+    model = K.Model(inputs=inputs, outputs=output)
+
     return model
