@@ -15,7 +15,7 @@ def resnet50():
     All weights should use he normal initialization
     Returns: the keras model
     """
-    inputs = K.layers.Input(shape=(224, 224, 3))
+    inputs = K.Input(shape=(224, 224, 3))
     he_normal = K.initializers.he_normal()
 
     # Convolutional layer 1
