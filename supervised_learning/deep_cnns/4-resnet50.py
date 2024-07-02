@@ -20,10 +20,15 @@ def resnet50():
 
     # Convolutional layer 1
     X = K.layers.Conv2D(
-        64, (7, 7),
+        filter=64,
+        kernel_size=(7, 7),
+        padding='same',
+        strides=2,
         kernel_initializer=he_normal)(inputs)
+    
     X = K.layers.BatchNormalization(axis=3)(X)
-    X = K.layers.Activation('relu')(X)
+
+    X = K.layers.Activation('relu')(X)    
 
     X = projection_block(X, [64, 64, 256], s=1)
     for i in range(2):
