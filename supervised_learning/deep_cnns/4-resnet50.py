@@ -36,7 +36,7 @@ def resnet50():
                             padding='same',
                             strides=(2, 2),)(AT)
 
-    X = projection_block(MX, [64, 64, 256], 1)
+    X = projection_block(MX, [64, 64, 256], s=1)
     for i in range(2):
         X = identity_block(X, [64, 64, 256])
 
