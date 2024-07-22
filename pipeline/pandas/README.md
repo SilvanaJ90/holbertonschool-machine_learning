@@ -37,9 +37,9 @@ General
 
 
 Download Pandas 0.24.x
-´´´
+```
 pip install --user pandas
-´´´
+```
 
 Datasets
 
