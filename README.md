@@ -84,6 +84,13 @@ Projects:
 
 [0x33_deep_q_learning](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/deep_q_learning)
 
+[0x34_temporal_difference](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/temporal_difference)
+
+[0x35_policy_gradients](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/reinforcement_learning/policy_gradients)
+
+[0x36_pandas](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/pipeline/pandas)
+
+
 
 
 
