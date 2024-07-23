@@ -25,9 +25,3 @@ def availableShips(passengerCount):
         url = data['next']
 
     return ships
-
-
-if __name__ == "__main__":
-    ships = availableShips(4)
-    for ship in ships:
-        print(ship)
