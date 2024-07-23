@@ -26,6 +26,7 @@ def availableShips(passengerCount):
 
     return ships
 
+
 if __name__ == "__main__":
     ships = availableShips(4)
     for ship in ships:
