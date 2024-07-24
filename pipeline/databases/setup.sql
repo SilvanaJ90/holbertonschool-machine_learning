@@ -1,12 +1,12 @@
 -- create db and user
 
-CREATE DATABASE IF NOT EXISTS hbtn_0d_tvshows_rate;
-CREATE USER IF NOT EXISTS 'hbtn_0d_tvshows_rate_dev'@'localhost' IDENTIFIED BY 'hbtn_0d_tvshows_rate_pwd';
-GRANT ALL ON `hbtn_0d_tvshows_rate`.* TO 'hbtn_0d_tvshows_rate_dev'@'localhost';
-GRANT SELECT ON `performance_schema`.* TO 'hbtn_0d_tvshows_rate_dev'@'localhost';
+CREATE DATABASE IF NOT EXISTS metal_bands;
+CREATE USER IF NOT EXISTS 'metal_bands_dev'@'localhost' IDENTIFIED BY 'metal_bands_pwd';
+GRANT ALL ON `metal_bands`.* TO 'metal_bands_dev'@'localhost';
+GRANT SELECT ON `performance_schema`.* TO 'metal_bands_dev'@'localhost';
 FLUSH PRIVILEGES;
 
 
 -- import db
 
-sudo mysql -u hbtn_0d_tvshows_rate_dev  -p hbtn_0d_tvshows_rate < hbtn_0d_tvshows_rate.sql
+sudo mysql -u metal_bands_dev  -p metal_bands < metal_bands.sql
