@@ -20,7 +20,8 @@ BEGIN
     -- Calculate the weighted average score
     SELECT SUM(c.score * p.weight) / SUM(p.weight) INTO weighted_avg
     FROM corrections c
-    JOIN projects p ON c.project_id = p.id
+    JOIN projects p
+    ON c.project_id = p.id
     WHERE c.user_id = user_id;
     
     -- Update the average score in the users table
