@@ -1,8 +1,3 @@
 // Write a script that creates or uses the database my_db:
 
-use admin
-db.createUser({
-  user: "my_db-read",
-  pwd: "MsxxLNWYQmJfu8CuTkpc",
-  roles: [{ role: "read", db: "my_db" }]
-})
+use my_db
