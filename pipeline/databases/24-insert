@@ -2,4 +2,4 @@
 
     // The document must have one attribute name with value “Holberton school”
 
-db.my_db.insertOne({name: 'Holberton school'})
+db.school.insertOne({name: 'Holberton school'})
