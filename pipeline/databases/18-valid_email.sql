@@ -3,10 +3,11 @@
 DELIMITER //
 
 CREATE TRIGGER valid_email_update
-AFTER UPDATE ON users
+BEFORE UPDATE ON users
 FOR EACH ROW
 BEGIN
-    UPDATE users 
-    SET valid_email = valid_email + NEW.email
+    IF NEW.email <> OLD.email THEN
+        SET NEW.valid_email = 0;
+    END IF;
 END //
 DELIMITER ;
