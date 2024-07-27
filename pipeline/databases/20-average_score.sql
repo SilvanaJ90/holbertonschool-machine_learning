@@ -8,7 +8,7 @@ DELIMITER $$
 
 CREATE PROCEDURE ComputeAverageScoreForUser(IN user_id INT)
 BEGIN
-    DECLARE avg_score FLOAT;
+    DECLARE avg_score FLOAT DEFAULT 0;
     
     -- Calculate the average score
     SELECT AVG(score) INTO avg_score
