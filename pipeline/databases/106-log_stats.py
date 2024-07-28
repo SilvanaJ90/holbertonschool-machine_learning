@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+""" Doc """
 from pymongo import MongoClient
 
 
