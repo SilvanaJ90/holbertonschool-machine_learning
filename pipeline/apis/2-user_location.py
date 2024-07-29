@@ -22,6 +22,7 @@ def get_user_location(url):
         print("Unexpected error")
 
 if __name__ == '__main__':
+    """ Doc """
     if len(sys.argv) != 2:
         print("Usage: ./2-user_location.py <GitHub API URL>")
         sys.exit(1)
