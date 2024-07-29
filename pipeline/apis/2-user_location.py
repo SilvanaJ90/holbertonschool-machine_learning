@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+""" Doc """
 import requests
 import sys
 from datetime import datetime
 
 def get_user_location(url):
+    """ Doc """
     response = requests.get(url)
 
     if response.status_code == 404:
