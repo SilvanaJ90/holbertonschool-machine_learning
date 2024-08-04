@@ -94,6 +94,7 @@ Projects:
 
 [0x38_databases](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/pipeline/databases)
 
+[0x39_data_preprocessing](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/pipeline/data_preprocessing)
 
 
 
