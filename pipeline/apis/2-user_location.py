@@ -26,4 +26,3 @@ if __name__ == '__main__':
         print("Reset in {} min".format(int(diff)))
     else:
         print("Not found")
-
