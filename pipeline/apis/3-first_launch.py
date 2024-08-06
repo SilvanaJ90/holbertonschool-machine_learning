@@ -14,6 +14,7 @@ def fetch_data(url):
 
 
 if __name__ == '__main__':
+    """ DOc """
     url = 'https://api.spacexdata.com/v4/launches/upcoming'
 
     launches = fetch_data(url)
