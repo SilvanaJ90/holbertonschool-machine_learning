@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     # Fetch the list of upcoming launches
     response = requests.get(url)
-    response.raise_for_status()  # Check for request errors
+    response.raise_for_status()
     launches = response.json()
 
     # Sort launches by date_unix
@@ -28,13 +28,13 @@ if __name__ == '__main__':
     # Fetch rocket details
     rocket_response = requests.get(
         f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
-    rocket_response.raise_for_status()  # Check for request errors
+    rocket_response.raise_for_status()
     rocket_name = rocket_response.json()["name"]
 
     # Fetch launchpad details
     launchpad_response = requests.get(
         f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
-    launchpad_response.raise_for_status()  # Check for request errors
+    launchpad_response.raise_for_status()
     launchpad = launchpad_response.json()
     launchpad_name = launchpad["name"]
     launchpad_loc = launchpad["locality"]
