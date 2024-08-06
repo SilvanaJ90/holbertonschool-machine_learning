@@ -14,13 +14,11 @@ def fetch_data(url):
 
 
 if __name__ == '__main__':
-    """ DOc """
     url = 'https://api.spacexdata.com/v4/launches/upcoming'
 
     launches = fetch_data(url)
     launches_sorted = sorted(launches, key=lambda x: x["date_unix"])
 
-    # Get the first launch
     first_launch = launches_sorted[0]
 
     launch_name = first_launch["name"]
@@ -28,7 +26,6 @@ if __name__ == '__main__':
     rocket_id = first_launch["rocket"]
     launchpad_id = first_launch["launchpad"]
 
-    # Fetch rocket and launchpad details
     rocket_name = fetch_data(
         f"https://api.spacexdata.com/v4/rockets/{rocket_id}")["name"]
     launchpad = fetch_data(
