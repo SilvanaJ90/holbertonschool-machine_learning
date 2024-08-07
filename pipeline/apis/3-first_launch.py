@@ -5,7 +5,6 @@
 """
 import requests
 
-
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v4/launches/upcoming'
 
@@ -34,5 +33,4 @@ if __name__ == '__main__':
     launchpad_name = launchpad["name"]
     launchpad_loc = launchpad["locality"]
 
-    print("{} ({}) {} - {} ({})".format(
-        launch_name, date, rocket_name, launchpad_name, launchpad_loc))
+    print(f"{launch_name} ({date}) {rocket_name} - {launchpad_name} ({launchpad_loc})")
