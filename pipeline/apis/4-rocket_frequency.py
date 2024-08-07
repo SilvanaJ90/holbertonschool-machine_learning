@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+    By using the (unofficial) SpaceX API, write a script
+    that displays the number of launches per rocket.
 
 """
 import requests
