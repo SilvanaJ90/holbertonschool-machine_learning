@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
     By using the (unofficial) SpaceX API, write a script
-    that displays the first launch with these information:
+    that displays the first launch with this information:
 """
 import requests
 
@@ -22,12 +22,14 @@ if __name__ == '__main__':
     launchpad_id = first_launch["launchpad"]
 
     rocket_response = requests.get(
-        f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
+        f"https://api.spacexdata.com/v4/rockets/{rocket_id}"
+    )
     rocket_response.raise_for_status()
     rocket_name = rocket_response.json()["name"]
 
     launchpad_response = requests.get(
-        f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
+        f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}"
+    )
     launchpad_response.raise_for_status()
     launchpad = launchpad_response.json()
     launchpad_name = launchpad["name"]
