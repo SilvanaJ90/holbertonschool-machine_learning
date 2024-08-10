@@ -12,16 +12,15 @@ if __name__ == '__main__':
     response = requests.get(url)
     launches = json.loads(response.content)
 
-    rocket = {}
+    rockets = {}
 
     for launch in launches:
         rocket_name = launch['rocket']['rocket_name']
-        if rocket_name not in rocket:
-            rocket[rocket_name] = 1
+        if rocket_name not in rockets:
+            rockets[rocket_name] = 1
         else:
-            rocket[rocket_name] += 1
+            rockets[rocket_name] += 1
 
-    sorted_rockets = sorted(rocket.items(), key=lambda x: x[1], reverse=True)
-
+    sorted_rockets = sorted(rockets.items(), key=lambda x: x[1], reverse=True)
     for rocket, count in sorted_rockets:
-        print("{}: {}".format(rocket, count))
+        print(f"{rocket}: {count}")
