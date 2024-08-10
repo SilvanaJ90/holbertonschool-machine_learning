@@ -23,4 +23,6 @@ if __name__ == '__main__':
 
     sorted_rockets = sorted(rockets.items(), key=lambda x: x[1], reverse=True)
     for rocket, count in sorted_rockets:
-        print(f"{rocket}: {count}")
+        print("{}: {}".format(
+        rocket, count))
+
