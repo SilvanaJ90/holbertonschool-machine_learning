@@ -1,36 +1,33 @@
 #!/usr/bin/env python3
-"""
-    By using the (unofficial) SpaceX API, write a script
+""" By using the (unofficial) SpaceX API, write a script
     that displays the first launch with these information:
 """
 import requests
+from datetime import datetime
+
 
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v4/launches/upcoming'
 
     response = requests.get(url)
-    response.raise_for_status()
-    launches = response.json()
+    launches_sorted = sorted(response.json(), key=lambda x: x["date_unix"])
 
-    launches_sorted = sorted(launches, key=lambda x: x["date_unix"])
+    date_unix = launches_sorted[0]["date_unix"]
 
-    first_launch = launches_sorted[0]
+    for launch in response.json():
+        if launch["date_unix"] == date_unix:
+            launch_name = launch["name"]
+            date = launch["date_local"]
+            rocket_id = launch["rocket"]
+            launchpad_id = launch["launchpad"]
+            break
 
-    launch_name = first_launch["name"]
-    date = first_launch["date_local"]
-    rocket_id = first_launch["rocket"]
-    launchpad_id = first_launch["launchpad"]
+    rock_name = requests.get("https://api.spacexdata.com/v4/rockets/"
+                             + rocket_id).json()["name"]
+    launchpad_name = requests.get("https://api.spacexdata.com/v4/launchpads/"
+                                  + launchpad_id).json()["name"]
+    launchpad_loc = requests.get("https://api.spacexdata.com/v4/launchpads/"
+                                 + launchpad_id).json()["locality"]
 
-    rocket_response = requests.get(
-        f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
-    rocket_response.raise_for_status()
-    rocket_name = rocket_response.json()["name"]
-
-    launchpad_response = requests.get(
-        f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
-    launchpad_response.raise_for_status()
-    launchpad = launchpad_response.json()
-    launchpad_name = launchpad["name"]
-    launchpad_loc = launchpad["locality"]
-
-    print("{} ({}) {} - {} ({})".format(launch_name, date, rocket_name, launchpad_name, launchpad_loc))
+    print("{} ({}) {} - {} ({})".format(
+        launch_name, date, rock_name, launchpad_name, launchpad_loc))
