@@ -18,7 +18,11 @@ def bag_of_words(sentences, vocab=None):
     """
      # Preprocess sentences to lower case and split into words
     processed_sentences = [re.findall(r'\b\w+\b', sentence.lower()) for sentence in sentences]
-
+    
+    # Remove single character words (like 's')
+    processed_sentences = [[word for word in sentence if len(word) > 1] for sentence in processed_sentences]
+    
+    # Create vocabulary if not provided
     if vocab is None:
         vocab = sorted(set(word for sentence in processed_sentences for word in sentence))
     else:
@@ -26,7 +30,7 @@ def bag_of_words(sentences, vocab=None):
 
     # Create the embeddings matrix
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
-
+    
     # Fill the embeddings matrix
     for i, sentence in enumerate(processed_sentences):
         for word in sentence:
