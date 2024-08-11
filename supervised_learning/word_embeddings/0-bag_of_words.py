@@ -19,7 +19,8 @@ def bag_of_words(sentences, vocab=None):
 
     def tokenize(sentence):
         sentence = re.sub(r"'s\b", '', sentence.lower())
-        return re.findall(r'\b\w+\b', sentence)
+        words = re.findall(r'\b\w+\b', sentence)
+        return words
 
     # Tokenize all sentences
     tokenized_sentences = [tokenize(sentence) for sentence in sentences]
