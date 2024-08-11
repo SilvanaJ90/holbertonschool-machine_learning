@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from nltk.stem import WordNetLemmatizer
 import string
 
