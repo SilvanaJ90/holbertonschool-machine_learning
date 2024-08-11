@@ -4,13 +4,12 @@
     that displays the number of launches per rocket
 """
 import requests
-import json
 
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v3/launches'
 
     response = requests.get(url)
-    launches = json.loads(response.content)
+    launches = response.json()
 
     rockets = {}
 
