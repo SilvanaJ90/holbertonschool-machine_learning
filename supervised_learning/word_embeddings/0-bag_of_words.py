@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 from nltk.stem import WordNetLemmatizer
 import string
+import nltk
+nltk.download('wordnet')
+nltk.download('stopwords')
 
 def preprocess(sentence):
     # Convertir a minúsculas y eliminar puntuación
