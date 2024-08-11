@@ -16,9 +16,14 @@ def bag_of_words(sentences, vocab=None):
         You are not allowed to use genism library.
     """
 
-    vector = CountVectorizer(vocabulary=vocab)
-    X = vector.fit_transform(sentences)
-    features = vector.get_feature_names_out()
-    embeddings = X.toarray()
+    if vocab is None:
+        vectorizer = CountVectorizer()
+        X = vectorizer.fit_transform(sentences)
+        vocab = vectorizer.get_feature_names()
+    else:
+        vectorizer = CountVectorizer(vocabulary=vocab)
+        X = vectorizer.fit_transform(sentences)
 
-    return embeddings, features
+    embedding = X.toarray()
+
+    return embedding, vocab
