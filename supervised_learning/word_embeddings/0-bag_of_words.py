@@ -11,6 +11,12 @@ def preprocess(sentence):
     sentence = re.sub(r'[^\w\s]', '', sentence)
     return sentence
 
+def singularize(word):
+    """Simple singularization (not comprehensive)"""
+    if word.endswith('s') and not word.endswith('ss'):
+        return word[:-1]
+    return word
+
 def bag_of_words(sentences, vocab=None):
     """
         - sentences is a list of sentences to analyze
@@ -27,7 +33,7 @@ def bag_of_words(sentences, vocab=None):
     
     if vocab is None:
         # Create a vocabulary from all unique words in the sentences
-        all_words = [word for sentence in processed_sentences for word in sentence]
+        all_words = [singularize(word) for sentence in processed_sentences for word in sentence]
         vocab = list(set(all_words))
     
     # Create a vocabulary index mapping
@@ -38,7 +44,7 @@ def bag_of_words(sentences, vocab=None):
     
     # Fill in the embeddings matrix
     for i, sentence in enumerate(processed_sentences):
-        word_count = Counter(sentence)
+        word_count = Counter(singularize(word) for word in sentence)
         for word, count in word_count.items():
             if word in vocab_index:
                 embeddings[i, vocab_index[word]] = count
