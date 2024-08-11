@@ -18,19 +18,21 @@ def bag_of_words(sentences, vocab=None):
     """
     # Clean and tokenize sentences
     def tokenize(sentence):
-        return re.findall(r'\b\w+\b', sentence.lower())
+            # Remover contracciones y posesivos como 's
+            sentence = re.sub(r"'s\b", '', sentence.lower())
+            return re.findall(r'\b\w+\b', sentence)
 
-    # Generate vocabulary if not provided
+    # Generar vocabulario si no está proporcionado
     if vocab is None:
         vocab = set()
         for sentence in sentences:
             vocab.update(tokenize(sentence))
         vocab = sorted(list(vocab))
+    
+    # Crear la matriz de embeddings con tipo de dato entero
+    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
 
-    # Create the embedding matrix
-    embeddings = np.zeros((len(sentences), len(vocab)))
-
-    # Fill the embedding matrix
+    # Llenar la matriz de embeddings
     for i, sentence in enumerate(sentences):
         words = tokenize(sentence)
         for word in words:
