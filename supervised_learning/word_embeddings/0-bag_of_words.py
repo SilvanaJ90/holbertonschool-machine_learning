@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ that creates a bag of words embedding matrix: """
-from sklearn.feature_extraction.text import CountVectorizer
+import numpy as np
+import re
 
 
 def bag_of_words(sentences, vocab=None):
@@ -16,14 +17,30 @@ def bag_of_words(sentences, vocab=None):
         You are not allowed to use genism library.
     """
 
+    def tokenize(sentence):
+        sentence = re.sub(r"'s\b", '', sentence.lower())
+        return re.findall(r'\b\w+\b', sentence)
+
+    # Tokenize all sentences
+    tokenized_sentences = [tokenize(sentence) for sentence in sentences]
+
+    # If vocab is None, build it from the sentences
     if vocab is None:
-        vectorizer = CountVectorizer()
-        X = vectorizer.fit_transform(sentences)
-        vocab = vectorizer.get_feature_names()
-    else:
-        vectorizer = CountVectorizer(vocabulary=vocab)
-        X = vectorizer.fit_transform(sentences)
+        vocab_set = set()
+        for sentence in tokenized_sentences:
+            vocab_set.update(sentence)
+        vocab = sorted(vocab_set)
 
-    embedding = X.toarray()
+    # Create a word index dictionary for quick lookup
+    word_index = {word: idx for idx, word in enumerate(vocab)}
 
-    return embedding, vocab
+    # Initialize the embeddings matrix with zeros
+    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
+
+    # Populate the embeddings matrix
+    for i, sentence in enumerate(tokenized_sentences):
+        for word in sentence:
+            if word in word_index:
+                embeddings[i, word_index[word]] += 1
+
+    return embeddings, vocab
