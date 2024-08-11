@@ -1,33 +1,56 @@
 #!/usr/bin/env python3
-from nltk.stem import WordNetLemmatizer
-import string
-import nltk
-nltk.download('wordnet')
-nltk.download('stopwords')
+import numpy as np
+import re
+from collections import Counter
 
-def preprocess(sentence):
-    # Convertir a minúsculas y eliminar puntuación
-    sentence = sentence.lower()
-    sentence = ''.join(char for char in sentence if char not in string.punctuation)
-    return sentence
+def tokenize(sentence):
+    """
+    Tokenize a sentence by removing punctuation and converting to lowercase.
+    """
+    return re.findall(r'\b\w+\b', sentence.lower())
 
-def singularize(word):
-    lemmatizer = WordNetLemmatizer()
-    return lemmatizer.lemmatize(word)
+def build_vocab(sentences, vocab=None):
+    """
+    Build the vocabulary list.
+    If vocab is provided, use it as the vocabulary.
+    Otherwise, create a vocabulary from sentences.
+    """
+    if vocab:
+        return vocab
+    
+    # Create a counter for all words in sentences
+    word_counter = Counter(word for sentence in sentences for word in tokenize(sentence))
+    
+    # Create vocabulary from counter keys
+    return sorted(word_counter.keys())
 
-def bag_of_words(sentences):
-    # Preprocesar y singularizar
-    processed_sentences = [preprocess(sentence).split() for sentence in sentences]
-    all_words = [singularize(word) for sentence in processed_sentences for word in sentence]
+def bag_of_words(sentences, vocab=None):
+    """
+    Create a bag of words embedding matrix.
     
-    # Crear vocabulario único
-    vocab = list(set(all_words))
-    vocab.sort()
+    Arguments:
+    sentences -- list of sentences to analyze
+    vocab -- list of the vocabulary words to use for the analysis
     
-    # Crear matriz de representaciones
-    E = []
-    for sentence in processed_sentences:
-        row = [1 if word in sentence else 0 for word in vocab]
-        E.append(row)
+    Returns:
+    embeddings -- numpy.ndarray of shape (s, f) containing the embeddings
+    features -- list of the features used for embeddings
+    """
+    # Build vocabulary
+    features = build_vocab(sentences, vocab)
+    vocab_size = len(features)
     
-    return E, vocab
+    # Create a dictionary to map words to their index in the feature list
+    word_to_index = {word: index for index, word in enumerate(features)}
+    
+    # Initialize the embedding matrix
+    embeddings = np.zeros((len(sentences), vocab_size), dtype=int)
+    
+    # Fill the embedding matrix
+    for i, sentence in enumerate(sentences):
+        word_counts = Counter(tokenize(sentence))
+        for word, count in word_counts.items():
+            if word in word_to_index:
+                embeddings[i, word_to_index[word]] = count
+    
+    return embeddings, features
