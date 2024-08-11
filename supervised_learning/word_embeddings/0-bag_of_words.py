@@ -7,8 +7,8 @@ from collections import Counter
 
 def preprocess(sentence):
     """ Lowercase and remove punctuation """
-    sentence = sentence.lower()
-    sentence = re.sub(r'[^\w\s]', '', sentence)
+    sentence = sentence.lower()  # Convertir a minúsculas
+    sentence = ''.join(char for char in sentence if char.isalnum() or char.isspace())  # Eliminar puntuación
     return sentence
 
 def singularize(word):
