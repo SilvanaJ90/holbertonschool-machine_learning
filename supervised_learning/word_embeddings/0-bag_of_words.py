@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ that creates a bag of words embedding matrix: """
-import numpy as np
-import re
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def bag_of_words(sentences, vocab=None):
@@ -16,25 +15,14 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-     # Preprocess sentences to lower case and split into words
-    processed_sentences = [re.findall(r'\b\w+\b', sentence.lower()) for sentence in sentences]
-    
-    # Remove single character words (like 's')
-    processed_sentences = [[word for word in sentence if len(word) > 1] for sentence in processed_sentences]
-    
-    # Create vocabulary if not provided
     if vocab is None:
-        vocab = sorted(set(word for sentence in processed_sentences for word in sentence))
+        vectorizer = CountVectorizer()
+        X = vectorizer.fit_transform(sentences)
+        vocab = vectorizer.get_feature_names()
     else:
-        vocab = sorted(vocab)
-
-    # Create the embeddings matrix
-    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
+        vectorizer = CountVectorizer(vocabulary=vocab)
+        X = vectorizer.fit_transform(sentences)
     
-    # Fill the embeddings matrix
-    for i, sentence in enumerate(processed_sentences):
-        for word in sentence:
-            if word in vocab:
-                embeddings[i, vocab.index(word)] += 1
+    embedding = X.toarray()
 
-    return embeddings, vocab
+    return embedding, vocab
