@@ -5,19 +5,19 @@
 """
 import requests
 
-
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v4/launches'
 
     response = requests.get(url)
     launches = response.json()
 
+    rocket = {}
     rockets = {}
 
     for launch in launches:
         rocket_id = launch['rocket']
         if rocket_id not in rockets:
-            rocket_response = requests.get('https://api.spacexdata.com/v4/rockets/' + rocket_id)
+            rocket_response = requests.get("https://api.spacexdata.com/v4/rockets/" + rocket_id)
             rocket_name = rocket_response.json()['name']
             rockets[rocket_name] = 1
         else:
