@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import pickle
 import os
 
-
 class DeepNeuralNetwork:
     """
     defines a deep neural network performing binary classification:
@@ -100,22 +99,27 @@ class DeepNeuralNetwork:
             self.__weights['b' + str(i)] -= alpha * db
             dz_last = dz
 
-    def train(self, X, Y, iterations=5000, alpha=0.05, verbose=True, graph=True, step=100):
+    def train(
+                self, X, Y, iterations=5000, alpha=0.05,
+                verbose=True, graph=True, step=100):
         """
         Doc
         """
         if not isinstance(iterations, int):
             raise TypeError("iterations must be an integer")
-        if iterations < 0:
+        if iterations <= 0:
             raise ValueError("iterations must be a positive integer")
         if not isinstance(alpha, float):
             raise TypeError("alpha must be a float")
-        if alpha < 0:
+        if alpha <= 0:
             raise ValueError("alpha must be positive")
         if not isinstance(step, int):
             raise TypeError("step must be an integer")
-        if step < 0 or step > iterations:
-            raise ValueError("step must be positive and <= iterations")
+        if verbose or graph:
+            if not isinstance(step, int):
+                raise TypeError('step must be an integer')
+            if step <= 0 or step > iterations:
+                raise ValueError("step must be positive and <= iterations")
 
         costs = []
         iterations_list = []
@@ -133,15 +137,15 @@ class DeepNeuralNetwork:
                 costs.append(cost)
                 iterations_list.append(i)
 
-            if graph:
-                plt.plot(iterations_list, costs, 'b-')
-                plt.xlabel('Iteration')
-                plt.ylabel('Cost')
-                plt.title('Training Cost')
-                plt.show()
+        if graph:
+            plt.plot(iterations_list, costs, 'b-')
+            plt.xlabel('Iteration')
+            plt.ylabel('Cost')
+            plt.title('Training Cost')
+            plt.show()
 
-            return self.evaluate(X, Y)
-
+        # Mover el return fuera del bucle
+        return self.evaluate(X, Y)
 
     def save(self, filename):
         """
@@ -163,7 +167,8 @@ class DeepNeuralNetwork:
             filename is the file from which the object should be loaded
             Returns: the loaded object, or None if filename doesn’t exist
         """
-        if not os.path.exists(filename):
+        try:
+            with open(filename, 'rb') as f:
+                return pickle.load(f)
+        except FileNotFoundError:
             return None
-        with open(filename, 'rb') as file:
-            return pickle.load(file)
