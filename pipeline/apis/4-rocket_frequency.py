@@ -5,18 +5,20 @@
 """
 import requests
 
-
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v4/launches'
 
     response = requests.get(url)
+    response.raise_for_status()  # Ensure we catch any HTTP errors
     launches = response.json()
 
     rockets = {}
 
     for launch in launches:
         rocket_id = launch['rocket']
-        rocket_response = requests.get(f'https://api.spacexdata.com/v4/rockets/{rocket_id}')
+        rocket_url = f'https://api.spacexdata.com/v4/rockets/{rocket_id}'
+        rocket_response = requests.get(rocket_url)
+        rocket_response.raise_for_status()  # Ensure we catch any HTTP errors
         rocket_name = rocket_response.json()['name']
 
         if rocket_name not in rockets:
@@ -26,4 +28,4 @@ if __name__ == '__main__':
 
     sorted_rockets = sorted(rockets.items(), key=lambda x: x[1], reverse=True)
     for rocket, count in sorted_rockets:
-        print("f{rocket}: {count}")
+        print("{}: {}".format(rocket, count))
