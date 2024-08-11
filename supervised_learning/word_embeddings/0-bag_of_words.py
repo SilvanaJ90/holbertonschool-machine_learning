@@ -7,7 +7,9 @@ def tokenize(sentence):
     """
     Tokenize a sentence by removing punctuation and converting to lowercase.
     """
-    return re.findall(r'\b\w+\b', sentence.lower())
+    sentence = re.sub(r"'s\b", '', sentence.lower())
+    return re.findall(r'\b\w+\b', sentence)
+
 
 def build_vocab(sentences, vocab=None):
     """
