@@ -4,24 +4,17 @@
     that displays the number of launches per rocket
 """
 import requests
-import json
-
 
 if __name__ == '__main__':
     url = 'https://api.spacexdata.com/v4/launches'
 
     response = requests.get(url)
-    launches = json.loads(response.content)
+    launches = response.json()
 
     rockets = {}
 
     for launch in launches:
-        rocket_id = launch['rocket']
-        rocket_url = f'https://api.spacexdata.com/v4/rockets/{rocket_id}'
-        rocket_response = requests.get(rocket_url)
-        rocket_response.raise_for_status()
-        rocket_name = rocket_response.json()['name']
-
+        rocket_name = launch['rocket']
         if rocket_name not in rockets:
             rockets[rocket_name] = 1
         else:
