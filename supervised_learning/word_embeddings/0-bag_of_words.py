@@ -2,7 +2,14 @@
 """ that creates a bag of words embedding matrix: """
 import numpy as np
 import re
+from collections import Counter
 
+
+def preprocess(sentence):
+    """ Lowercase and remove punctuation """
+    sentence = sentence.lower()
+    sentence = re.sub(r'[^\w\s]', '', sentence)
+    return sentence
 
 def bag_of_words(sentences, vocab=None):
     """
@@ -16,31 +23,27 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-
-    def tokenize(sentence):
-        sentence = re.sub(r"'s\b", '', sentence.lower())
-        return re.findall(r'\b\w+\b', sentence)
-
-    # Tokenize all sentences
-    tokenized_sentences = [tokenize(sentence) for sentence in sentences]
-
-    # If vocab is None, build it from the sentences
+    processed_sentences = [preprocess(sentence) for sentence in sentences]
+        
+    # Tokenize sentences
+    tokenized_sentences = [sentence.split() for sentence in processed_sentences]
+        
     if vocab is None:
-        vocab_set = set()
-        for sentence in tokenized_sentences:
-            vocab_set.update(sentence)
-        vocab = sorted(vocab_set)
-
-    # Create a word index dictionary for quick lookup
-    word_index = {word: idx for idx, word in enumerate(vocab)}
-
-    # Initialize the embeddings matrix with zeros
+        # Create a vocabulary from all unique words in the sentences
+        all_words = [word for sentence in tokenized_sentences for word in sentence]
+        vocab = list(set(all_words))
+    
+    # Create a vocabulary index mapping
+    vocab_index = {word: idx for idx, word in enumerate(vocab)}
+    
+    # Initialize embeddings matrix
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
-
-    # Populate the embeddings matrix
+    
+    # Fill in the embeddings matrix
     for i, sentence in enumerate(tokenized_sentences):
-        for word in sentence:
-            if word in word_index:
-                embeddings[i, word_index[word]] += 1
-
-    return embeddings, vocab
+        word_count = Counter(sentence)
+        for word, count in word_count.items():
+            if word in vocab_index:
+                embeddings[i, vocab_index[word]] = count
+    
+        return embeddings, vocab
