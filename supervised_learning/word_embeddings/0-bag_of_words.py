@@ -4,11 +4,6 @@ import numpy as np
 import re
 
 
-def tokenize(sentence):
-    sentence = re.sub(r"'s\b", '', sentence.lower())
-    words = re.findall(r'\b\w+\b', sentence)
-    return words
-
 def bag_of_words(sentences, vocab=None):
     """
         - sentences is a list of sentences to analyze
@@ -21,6 +16,12 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
+
+    def tokenize(sentence):
+        sentence = re.sub(r"'s\b", '', sentence.lower())
+        words = re.findall(r'\b\w+\b', sentence)
+        return words
+
     # Tokenize all sentences
     tokenized_sentences = [tokenize(sentence) for sentence in sentences]
 
