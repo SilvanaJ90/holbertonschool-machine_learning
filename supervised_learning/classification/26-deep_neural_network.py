@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pickle
 import os
 
+
 class DeepNeuralNetwork:
     """
     defines a deep neural network performing binary classification:
@@ -167,8 +168,7 @@ class DeepNeuralNetwork:
             filename is the file from which the object should be loaded
             Returns: the loaded object, or None if filename doesn’t exist
         """
-        try:
-            with open(filename, 'rb') as f:
-                return pickle.load(f)
-        except FileNotFoundError:
+        if not os.path.exists(filename):
             return None
+        with open(filename, 'rb') as file:
+            return pickle.load(file)
