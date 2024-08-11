@@ -16,27 +16,32 @@ def bag_of_words(sentences, vocab=None):
         - features is a list of the features used for embeddings
         You are not allowed to use genism library.
     """
-    # Clean and tokenize sentences
-    def tokenize(sentence):
-            # Remover contracciones y posesivos como 's
-            sentence = re.sub(r"'s\b", '', sentence.lower())
-            return re.findall(r'\b\w+\b', sentence)
 
-    # Generar vocabulario si no está proporcionado
+    def tokenize(sentence):
+        sentence = sentence.lower()
+        words = re.findall(r'\b\w+\b', sentence)
+        return words
+
+    # Tokenize all sentences
+    tokenized_sentences = [tokenize(sentence) for sentence in sentences]
+
+    # If vocab is None, build it from the sentences
     if vocab is None:
-        vocab = set()
-        for sentence in sentences:
-            vocab.update(tokenize(sentence))
-        vocab = sorted(list(vocab))
-    
-    # Crear la matriz de embeddings con tipo de dato entero
+        vocab_set = set()
+        for sentence in tokenized_sentences:
+            vocab_set.update(sentence)
+        vocab = sorted(vocab_set)
+
+    # Create a word index dictionary for quick lookup
+    word_index = {word: idx for idx, word in enumerate(vocab)}
+
+    # Initialize the embeddings matrix with zeros
     embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
 
-    # Llenar la matriz de embeddings
-    for i, sentence in enumerate(sentences):
-        words = tokenize(sentence)
-        for word in words:
-            if word in vocab:
-                embeddings[i, vocab.index(word)] += 1
+    # Populate the embeddings matrix
+    for i, sentence in enumerate(tokenized_sentences):
+        for word in sentence:
+            if word in word_index:
+                embeddings[i, word_index[word]] += 1
 
     return embeddings, vocab
