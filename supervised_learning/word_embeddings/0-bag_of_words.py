@@ -1,52 +1,29 @@
-#!/usr/bin/env python3
-""" that creates a bag of words embedding matrix: """
-import numpy as np
-import re
-from collections import Counter
-
+from nltk.stem import WordNetLemmatizer
+import string
 
 def preprocess(sentence):
-    """ Lowercase and remove punctuation """
-    sentence = sentence.lower()  # Convertir a minúsculas
-    sentence = ''.join(char for char in sentence if char.isalnum() or char.isspace())  # Eliminar puntuación
+    # Convertir a minúsculas y eliminar puntuación
+    sentence = sentence.lower()
+    sentence = ''.join(char for char in sentence if char not in string.punctuation)
     return sentence
 
 def singularize(word):
-    """Simple singularization (not comprehensive)"""
-    if word.endswith('s') and not word.endswith('ss'):
-        return word[:-1]
-    return word
+    lemmatizer = WordNetLemmatizer()
+    return lemmatizer.lemmatize(word)
 
-def bag_of_words(sentences, vocab=None):
-    """
-        - sentences is a list of sentences to analyze
-        - vocab is a list of the vocabulary words to use for the analysis
-            - If None, all words within sentences should be used
-        Returns: embeddings, features
-        - embeddings numpy.ndarray of shape (s, f) containing the embeddings
-            s is the number of sentences in sentences
-            f is the number of features analyzed
-        - features is a list of the features used for embeddings
-        You are not allowed to use genism library.
-    """
+def bag_of_words(sentences):
+    # Preprocesar y singularizar
     processed_sentences = [preprocess(sentence).split() for sentence in sentences]
+    all_words = [singularize(word) for sentence in processed_sentences for word in sentence]
     
-    if vocab is None:
-        # Create a vocabulary from all unique words in the sentences
-        all_words = [singularize(word) for sentence in processed_sentences for word in sentence]
-        vocab = list(set(all_words))
+    # Crear vocabulario único
+    vocab = list(set(all_words))
+    vocab.sort()
     
-    # Create a vocabulary index mapping
-    vocab_index = {word: idx for idx, word in enumerate(sorted(vocab))}
+    # Crear matriz de representaciones
+    E = []
+    for sentence in processed_sentences:
+        row = [1 if word in sentence else 0 for word in vocab]
+        E.append(row)
     
-    # Initialize embeddings matrix
-    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
-    
-    # Fill in the embeddings matrix
-    for i, sentence in enumerate(processed_sentences):
-        word_count = Counter(singularize(word) for word in sentence)
-        for word, count in word_count.items():
-            if word in vocab_index:
-                embeddings[i, vocab_index[word]] = count
-    
-    return embeddings, sorted(vocab)
+    return E, vocab
