@@ -96,6 +96,8 @@ Projects:
 
 [0x39_data_preprocessing](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/pipeline/data_preprocessing)
 
+[0x40_data_augmentation](https://github.com/SilvanaJ90/holbertonschool-machine_learning/tree/main/pipeline/data_augmentation)
+
 
 
 
