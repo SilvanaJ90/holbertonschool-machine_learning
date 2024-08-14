@@ -18,7 +18,7 @@ def identity_block(A_prev, filters):
         tensor: The activated output of the identity block.
     """
     F11, F3, F12 = filters
-    he_normal = K.initializers.he_normal()
+    he_normal = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     conv1 = K.layers.Conv2D(
