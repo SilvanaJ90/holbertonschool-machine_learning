@@ -19,4 +19,50 @@ def densenet121(growth_rate=32, compression=1.0):
     Returns: the keras model
 
     """
-    
+    inputs = K.layers.Input(shape=(224, 224, 3))
+
+    # Initial Convolution and Pooling layers
+    x = K.layers.BatchNormalization()(inputs)
+    x = K.layers.Activation('relu')(x)
+    x = K.layers.Conv2D(
+        64, (7, 7), strides=2,
+        padding='same', kernel_initializer=K.initializers.HeNormal(seed=0))(x)
+    x = K.layers.MaxPooling2D((3, 3), strides=2, padding='same')(x)
+
+    # Dense Block 1
+    x, nb_filters = dense_block(x, 64, growth_rate, 6)
+
+    # Transition Layer 1
+    x, nb_filters = transition_layer(x, nb_filters, compression)
+
+    # Dense Block 2
+    x, nb_filters = dense_block(x, nb_filters, growth_rate, 12)
+
+    # Transition Layer 2
+    x, nb_filters = transition_layer(x, nb_filters, compression)
+
+    # Dense Block 3
+    x, nb_filters = dense_block(x, nb_filters, growth_rate, 24)
+
+    # Transition Layer 3
+    x, nb_filters = transition_layer(x, nb_filters, compression)
+
+    # Dense Block 4
+    x, nb_filters = dense_block(x, nb_filters, growth_rate, 16)
+
+    # Final Batch Normalization
+    x = K.layers.BatchNormalization()(x)
+    x = K.layers.Activation('relu')(x)
+
+    # Global Average Pooling
+    x = K.layers.GlobalAveragePooling2D()(x)
+
+    # Fully connected layer (Classification layer)
+    outputs = K.layers.Dense(
+        1000, activation='softmax',
+        kernel_initializer=K.initializers.HeNormal(seed=0))(x)
+
+    # Create model
+    model = K.models.Model(inputs=inputs, outputs=outputs)
+
+    return model
