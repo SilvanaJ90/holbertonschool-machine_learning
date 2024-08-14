@@ -30,7 +30,7 @@ def resnet50():
     BN = K.layers.BatchNormalization(axis=3)(CV2D)
 
     # Action
-    AT = K.layers.ReLU()(BN)
+    AT = K.layers.Activation('relu')(BN)
 
     MX = K.layers.MaxPool2D(pool_size=(3, 3),
                             padding='same',
