@@ -39,10 +39,12 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations,
         for i in range(iterations + 1):
             if i > 0:
                 sess.run(train_op, feed_dict={x: X_train, y: Y_train})
-            
+
             # Compute training and validation metrics
-            train_cost, train_accuracy = sess.run([loss, accuracy], feed_dict={x: X_train, y: Y_train})
-            valid_cost, valid_accuracy = sess.run([loss, accuracy], feed_dict={x: X_valid, y: Y_valid})
+            train_cost, train_accuracy = sess.run(
+                [loss, accuracy], feed_dict={x: X_train, y: Y_train})
+            valid_cost, valid_accuracy = sess.run(
+                [loss, accuracy], feed_dict={x: X_valid, y: Y_valid})
 
             # Print metrics
             if i % 100 == 0 or i == 0 or i == iterations:
