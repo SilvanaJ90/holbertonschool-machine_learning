@@ -16,7 +16,7 @@ def resnet50():
     Returns: the keras model
     """
     inputs = K.Input(shape=(224, 224, 3))
-    he_normal_input = K.initializers.he_normal()
+    he_normal_input = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     CV2D = K.layers.Conv2D(
