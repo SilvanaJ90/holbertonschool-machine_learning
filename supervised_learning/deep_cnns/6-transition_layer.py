@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """  builds a dense block """
-from tensorflow import keras as K 
+from tensorflow import keras as K
 
 
 def transition_layer(X, nb_filters, compression):
