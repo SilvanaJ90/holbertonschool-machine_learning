@@ -21,5 +21,5 @@ def evaluate(X, Y, save_path):
         prediction = sess.run(y_pred, feed_dict={x: X, y: Y})
         accuracy_value = sess.run(accuracy, feed_dict={x: X, y: Y})
         loss_value = sess.run(loss, feed_dict={x: X, y: Y})
-    
+
     return prediction, accuracy_value, loss_value
