@@ -17,17 +17,19 @@ def densenet121(growth_rate=32, compression=1.0):
 
     """
     inputs = K.layers.Input(shape=(224, 224, 3))
+    he_normal_input = K.initializers.he_normal(seed=0)
+    nb_filters = 2 * growth_rate
 
     # Initial Convolution and Pooling layers
-    x = K.layers.BatchNormalization()(inputs)
+    x = K.layers.BatchNormalization(axis=3)(inputs)
     x = K.layers.Activation('relu')(x)
     x = K.layers.Conv2D(
-        64, (7, 7), strides=2,
-        padding='same', kernel_initializer=K.initializers.HeNormal(seed=0))(x)
+        nb_filters, (7, 7), strides=2,
+        padding='same', kernel_initializer=he_normal_input)(x)
     x = K.layers.MaxPooling2D((3, 3), strides=2, padding='same')(x)
 
     # Dense Block 1
-    x, nb_filters = dense_block(x, 64, growth_rate, 6)
+    x, nb_filters = dense_block(x, nb_filters, growth_rate, 6)
 
     # Transition Layer 1
     x, nb_filters = transition_layer(x, nb_filters, compression)
@@ -57,7 +59,7 @@ def densenet121(growth_rate=32, compression=1.0):
     # Fully connected layer (Classification layer)
     outputs = K.layers.Dense(
         1000, activation='softmax',
-        kernel_initializer=K.initializers.HeNormal(seed=0))(x)
+        kernel_initializer=he_normal_input)(x)
 
     # Create model
     model = K.models.Model(inputs=inputs, outputs=outputs)
