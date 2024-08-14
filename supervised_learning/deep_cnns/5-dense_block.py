@@ -19,26 +19,29 @@ def dense_block(X, nb_filters, growth_rate, layers):
 
 
     """
-    he_normal = K.initializers.he_normal()
-    concat_outputs = [X]
+    he_normal = K.initializers.he_normal(seed=0)
+
     for i in range(layers):
-        # Bottleneck layer
-        x = K.layers.BatchNormalization()(X)
-        x = K.layers.Activation('relu')(x)
-        x = K.layers.Conv2D(
-            growth_rate * 4,
-            (1, 1), padding='same', kernel_initializer=he_normal
-        )(X)
+        # Batch Normalization + ReLU + 1x1 Convolution (Bottleneck layer)
+        bn1 = K.layers.BatchNormalization()(X)
+        relu1 = K.layers.Activation('relu')(bn1)
+        conv1 = K.layers.Conv2D(
+            4 * growth_rate, (1, 1),
+            padding='same',
+            kernel_initializer=he_normal)(relu1)
 
-        # Convolutional layer
-        x = K.layers.BatchNormalization()(x)
-        x = K.layers.Activation('relu')(x)
-        x = K.layers.Conv2D(
-            growth_rate, 3, padding='same',
-            kernel_initializer=he_normal)(x)
+        # Batch Normalization + ReLU + 3x3 Convolution
+        bn2 = K.layers.BatchNormalization()(conv1)
+        relu2 = K.layers.Activation('relu')(bn2)
+        conv2 = K.layers.Conv2D(
+            growth_rate, (3, 3),
+            padding='same',
+            kernel_initializer=he_normal)(relu2)
 
-        concat_outputs.append(x)
-        X = K.layers.concatenate(concat_outputs, axis=-1)
+        # Concatenate input with output of the 3x3 convolution
+        X = K.layers.Concatenate()([X, conv2])
+
+        # Update the number of filters
         nb_filters += growth_rate
 
     return X, nb_filters
