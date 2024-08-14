@@ -17,12 +17,12 @@ def densenet121(growth_rate=32, compression=1.0):
 
     """
     inputs = K.layers.Input(shape=(224, 224, 3))
-    he_normal_input = K.initializers.he_normal(seed=0)
+    he_normal_input = K.initializers.HeNormal(seed=0)
     nb_filters = 2 * growth_rate
 
     # Initial Convolution and Pooling layers
     x = K.layers.BatchNormalization(axis=3)(inputs)
-    x = K.layers.Activation('relu')(x)
+    x = K.layers.Activation('relu', name='re_lu')(x)  # Explicit name for ReLU
     x = K.layers.Conv2D(
         nb_filters, (7, 7), strides=2,
         padding='same', kernel_initializer=he_normal_input)(x)
@@ -49,9 +49,8 @@ def densenet121(growth_rate=32, compression=1.0):
     # Dense Block 4
     x, nb_filters = dense_block(x, nb_filters, growth_rate, 16)
 
-    # Average Pooling
-    X = K.layers.AveragePooling2D(pool_size=(7, 7),
-                                  strides=(1, 1))(x)
+    # Global Average Pooling
+    x = K.layers.GlobalAveragePooling2D()(x)
 
     # Fully connected layer (Classification layer)
     outputs = K.layers.Dense(
