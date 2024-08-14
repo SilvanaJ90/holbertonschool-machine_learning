@@ -22,8 +22,7 @@ def densenet121(growth_rate=32, compression=1.0):
 
     # Initial Convolution and Pooling layers
     x = K.layers.BatchNormalization(axis=3)(inputs)
-    x = K.layers.ReLU()(x)
-    x = K.layers.Activation('relu')(x)
+    x = K.layers.Activation('relu', name='re_lu')(x)  # Explicit name for ReLU
     x = K.layers.Conv2D(
         nb_filters, (7, 7), strides=2,
         padding='same', kernel_initializer=he_normal_input)(x)
