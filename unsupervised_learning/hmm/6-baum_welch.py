@@ -41,7 +41,7 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
             for i in range(M):
                 xi[t, i] = (
                     alpha[t, i] * beta[t + 1] * A[i] * B[:, Obs[t + 1]]
-                ) / denom
+                    ) / denom
         return xi
 
     # Expectation-Maximization
@@ -52,7 +52,8 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
         xi = compute_xi(alpha, beta, Observations, Transition, Emission)
 
         # Update Transition matrix
-        Transition = np.sum(xi, axis=0) / np.sum(gammas[:-1], axis=0, keepdims=True)
+        Transition = np.sum(
+            xi, axis=0) / np.sum(gammas[:-1], axis=0, keepdims=True)
 
         # Update Emission matrix
         new_Emission = np.zeros_like(Emission)
