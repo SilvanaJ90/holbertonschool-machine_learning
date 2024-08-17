@@ -165,7 +165,7 @@ class Yolo:
         for image in images:
             image_shapes.append(image.shape[:2])
             resized_image = cv2.resize(
-                image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
+                image, (input_w, input_h), interpolation=cv2.INTER_LINEAR)
             pimage = resized_image.astype(np.float32) / 255.0  # Normalización
 
             pimages.append(pimage)
