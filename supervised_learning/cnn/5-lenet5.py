@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """  hat builds a modified version of the LeNet-5 architecture using keras:
 """
-from tensorflow import keras as K
+import tensorflow.keras as K
 
 
 def lenet5(X):
@@ -27,7 +27,7 @@ def lenet5(X):
         use the relu activation function
         you may import tensorflow.keras as K
     """
-    initializer = K.initializers.he_normal(seed=None)
+    initializer = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     conv1 = K.layers.Conv2D(filters=6, kernel_size=(5, 5), padding='same',
@@ -61,10 +61,9 @@ def lenet5(X):
     # Output layer
     output = K.layers.Dense(units=10, activation='softmax')(fc2)
 
-    optimizer = K.optimizers.Adam()
     model = K.Model(inputs=X, outputs=output)
     model.compile(
-        optimizer=optimizer,
+        optimizer='adam',
         loss='categorical_crossentropy',
         metrics=['accuracy']
         )
