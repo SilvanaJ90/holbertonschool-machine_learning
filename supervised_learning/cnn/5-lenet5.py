@@ -28,28 +28,50 @@ def lenet5(X):
         you may import tensorflow.keras as K
     """
     initializers = K.initializers.HeNormal(seed=0)
+
     model = K.Sequential()
-    model.add(K.layers.Conv2D(
-        6, 5, activation='relu',
-        kernel_initializer=initializers,
-        padding='same', input_shape=X.shape[1:]))
-    model.add(K.layers.MaxPooling2D())
+
     model.add(
         K.layers.Conv2D(
-            16, 5, activation='relu', kernel_initializer=initializers))
+            6, 5, activation='relu',
+            kernel_initializer=initializers,
+            padding='same', input_shape=X.shape[1:])
+            )
+
     model.add(K.layers.MaxPooling2D())
+
+    model.add(
+        K.layers.Conv2D(
+            16, 5, activation='relu', 
+            ernel_initializer=initializers)
+            )
+
+    model.add(K.layers.MaxPooling2D())
+
     model.add(K.layers.Flatten())
+
     model.add(
         K.layers.Dense(
-            120, activation='relu', kernel_initializer=initializers))
+            120, activation='relu',
+            kernel_initializer=initializers)
+            )
+
     model.add(
         K.layers.Dense(
-            84, activation='relu', kernel_initializer=initializers))
+            84, activation='relu',
+            kernel_initializer=initializers)
+            )
+
     model.add(
         K.layers.Dense(
             10, activation='softmax',
-            kernel_initializer=initializers))
-    model.compile(optimizer=K.optimizers.Adam(),
-                  loss='categorical_crossentropy', metrics=['accuracy'])
+            kernel_initializer=initializers)
+            )
+
+    model.compile(
+        optimizer=K.optimizers.Adam(),
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+        )
 
     return model
