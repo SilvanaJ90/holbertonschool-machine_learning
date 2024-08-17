@@ -167,10 +167,7 @@ class Yolo:
             resized_image = cv2.resize(
                 image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
             pimage = resized_image / 255
-            display_image = (pimage * 255).astype(np.uint8)
-            cv2.imshow('Processed Image', display_image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            pimage = resized_image.astype(np.float32) / 255  # Normalización
 
             pimages.append(pimage)
 
