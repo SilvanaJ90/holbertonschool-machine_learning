@@ -10,38 +10,39 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
     T = Observations.shape[0]  # Length of observation sequence
     M = Transition.shape[0]    # Number of hidden states
     N = Emission.shape[1]      # Number of output states
-    
-    # Convert probabilities to log-space
-    def log_add(a, b):
-        return np.logaddexp(a, b)
 
+    # Helper functions
     def forward(Obs, A, B, Pi):
         alpha = np.zeros((T, M))
-        alpha[0] = np.log(Pi.flatten()) + np.log(B[:, Obs[0]])
+        alpha[0] = Pi.flatten() * B[:, Obs[0]]
         for t in range(1, T):
             for j in range(M):
-                alpha[t, j] = np.log(np.sum(np.exp(alpha[t - 1] + np.log(A[:, j]))) + 1e-10) + np.log(B[j, Obs[t]])
+                alpha[t, j] = np.sum(alpha[t - 1] * A[:, j]) * B[j, Obs[t]]
         return alpha
 
     def backward(Obs, A, B):
         beta = np.zeros((T, M))
-        beta[-1] = np.zeros(M)  # Log of 1
+        beta[-1] = np.ones(M)
         for t in range(T - 2, -1, -1):
             for i in range(M):
-                beta[t, i] = np.log(np.sum(np.exp(beta[t + 1] + np.log(A[i]) + np.log(B[:, Obs[t + 1]]))) + 1e-10)
+                beta[t, i] = np.sum(beta[t + 1] * A[i] * B[:, Obs[t + 1]])
         return beta
 
     def compute_gammas(alpha, beta):
-        gammas = alpha + beta
-        return gammas - np.log(np.sum(np.exp(gammas), axis=1, keepdims=True))
+        gammas = alpha * beta
+        return gammas / np.sum(gammas, axis=1, keepdims=True)
 
     def compute_xi(alpha, beta, Obs, A, B):
         xi = np.zeros((T - 1, M, M))
         for t in range(T - 1):
-            denom = np.log(np.sum(np.exp(alpha[t][:, None] + np.log(A) + np.log(B[:, Obs[t + 1]]) + beta[t + 1]), axis=1) + 1e-10)
+            denom = np.sum(
+                alpha[t, :, None] * beta[t + 1] * A * B[:, Obs[t + 1]], axis=1)
+            denom[denom == 0] = 1e-10  # Avoid division by zero
             for i in range(M):
-                xi[t, i] = alpha[t, i][:, None] + np.log(A[i]) + np.log(B[:, Obs[t + 1]]) + beta[t + 1] - denom
-        return np.exp(xi)
+                xi[t, i] = (
+                    alpha[t, i] * beta[t + 1] * A[i] * B[:, Obs[t + 1]]
+                ) / denom
+        return xi
 
     # Expectation-Maximization
     for _ in range(iterations):
