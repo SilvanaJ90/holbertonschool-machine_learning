@@ -27,7 +27,7 @@ def lenet5(X):
         use the relu activation function
         you may import tensorflow.keras as K
     """
-    initializer = K.initializers.HeNormal(seed=0)
+    initializer = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     conv1 = K.layers.Conv2D(filters=6, kernel_size=(5, 5), padding='same',
@@ -59,7 +59,7 @@ def lenet5(X):
         kernel_initializer=initializer)(fc1)
 
     # Output layer
-    output = K.layers.Dense(units=10, activation='softmax')(fc2)
+    output = K.layers.Dense(units=10, activation='relu')(fc2)
 
     model = K.Model(inputs=X, outputs=output)
     model.compile(
