@@ -31,8 +31,8 @@ def lenet5(X):
 
     # Convolutional layer 1
     conv1 = K.layers.Conv2D(filters=6, kernel_size=(5, 5), padding='same',
-                        activation='relu',
-                        kernel_initializer=K.initializers.he_normal(seed=0))(X)
+                            activation='relu',
+                            kernel_initializer=K.initializers.he_normal(seed=0))(X)
 
     # Max pooling layer 1
     pool1 = K.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv1)
@@ -49,23 +49,22 @@ def lenet5(X):
     flatten = K.layers.Flatten()(pool2)
 
     # Fully connected layer 1
-    fc1 = K.layers.Dense(
-        units=120, activation='relu',
-        kernel_initializer=K.initializers.he_normal(seed=0))(flatten)
+    fc1 = K.layers.Dense(units=120, activation='relu',
+                         kernel_initializer=K.initializers.he_normal(seed=0))(flatten)
 
     # Fully connected layer 2
-    fc2 = K.layers.Dense(
-        units=84, activation='relu',
-        kernel_initializer=K.initializers.he_normal(seed=0))(fc1)
+    fc2 = K.layers.Dense(units=84, activation='relu',
+                         kernel_initializer=K.initializers.he_normal(seed=0))(fc1)
 
     # Output layer
     output = K.layers.Dense(units=10, activation='softmax')(fc2)
 
+    # Create the model
     model = K.Model(inputs=X, outputs=output)
-    model.compile(
-        optimizer='adam',
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
-        )
+
+    # Compile the model
+    model.compile(optimizer='adam',
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy'])
 
     return model
