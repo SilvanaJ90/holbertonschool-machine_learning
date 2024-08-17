@@ -62,8 +62,10 @@ def lenet5(X):
     output = K.layers.Dense(units=10, activation='softmax')(fc2)
 
     model = K.Model(inputs=X, outputs=output)
+
+    optimizer = K.optimizers.Adam(learning_rate=0.001)
     model.compile(
-        optimizer='adam',
+        optimizer=optimizer
         loss='categorical_crossentropy',
         metrics=['accuracy']
     )
