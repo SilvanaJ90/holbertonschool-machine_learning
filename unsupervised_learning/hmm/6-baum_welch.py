@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """ Doc """
-forward = __import__('3-forward').forward
-backward = __import__('5-backward').backward
 import numpy as np
 
 
@@ -9,41 +7,54 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
     """
     Baum-Welch algorithm for Hidden Markov Models
     """
-    T = Observations.shape[0]
-    N, M = Transition.shape
+    T = Observations.shape[0]  # Length of observation sequence
+    M = Transition.shape[0]    # Number of hidden states
+    N = Emission.shape[1]      # Number of output states
+    
+    # Helper functions
+    def forward(Obs, A, B, Pi):
+        alpha = np.zeros((T, M))
+        alpha[0] = Pi.flatten() * B[:, Obs[0]]
+        for t in range(1, T):
+            for j in range(M):
+                alpha[t, j] = np.sum(alpha[t - 1] * A[:, j]) * B[j, Obs[t]]
+        return alpha
 
-    for _ in range(iterations):
-        # Forward Step
-        forward_prob, _ = forward(Observations, Emission, Transition, Initial)
+    def backward(Obs, A, B):
+        beta = np.zeros((T, M))
+        beta[-1] = np.ones(M)
+        for t in range(T - 2, -1, -1):
+            for i in range(M):
+                beta[t, i] = np.sum(beta[t + 1] * A[i] * B[:, Obs[t + 1]])
+        return beta
 
-        # Backward Step
-        _, backward_prob = backward(Observations, Emission, Transition, Initial)
+    def compute_gammas(alpha, beta):
+        gammas = alpha * beta
+        return gammas / np.sum(gammas, axis=1, keepdims=True)
 
-        # Expectation step
-        xi = np.zeros((T - 1, N, N))
-        gamma = np.zeros((T, N))
-
+    def compute_xi(alpha, beta, Obs, A, B):
+        xi = np.zeros((T - 1, M, M))
         for t in range(T - 1):
-            obs = Observations[t + 1]
-            for i in range(N):
-                for j in range(N):
-                    xi[t, i, j] = forward_prob[i, t] * Transition[i, j] * Emission[j, obs] * backward_prob[j, t + 1]
-            xi[t] /= np.sum(xi[t])
+            denom = np.sum(alpha[t, :, None] * beta[t + 1] * A * B[:, Obs[t + 1]], axis=1)
+            for i in range(M):
+                xi[t, i] = (alpha[t, i] * beta[t + 1] * A[i] * B[:, Obs[t + 1]]) / denom
+        return xi
 
-        gamma = np.sum(xi, axis=2)
+    # Expectation-Maximization
+    for _ in range(iterations):
+        alpha = forward(Observations, Transition, Emission, Initial)
+        beta = backward(Observations, Transition, Emission)
+        gammas = compute_gammas(alpha, beta)
+        xi = compute_xi(alpha, beta, Observations, Transition, Emission)
+
+        # Update Transition matrix
+        Transition = np.sum(xi, axis=0) / np.sum(gammas[:-1], axis=0, keepdims=True)
         
-        # Maximization step
-        Transition_new = np.sum(xi, axis=0) / np.sum(gamma, axis=0).reshape((-1, 1))
-        gamma_sum = np.sum(gamma, axis=0)
-        gamma_sum = np.hstack((gamma_sum, np.sum(xi[-1], axis=0)))
-        for k in range(M):
-            Emission[k] = np.sum((Observations == k) * gamma.T, axis=0) / gamma_sum[k]
-
-        # Check for convergence
-        if np.allclose(Transition, Transition_new, atol=1e-8):
-            return Transition, Emission
-
-        Transition = Transition_new
-
-    # If convergence is not reached
-    return None, None
+        # Update Emission matrix
+        new_Emission = np.zeros_like(Emission)
+        for k in range(N):
+            mask = (Observations == k)
+            new_Emission[:, k] = np.sum(gammas[mask], axis=0)
+        Emission = new_Emission / np.sum(gammas, axis=0, keepdims=True)
+        
+    return Transition, Emission
