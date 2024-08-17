@@ -16,8 +16,8 @@ class Yolo:
         self.anchors = anchors
         with open(classes_path) as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        self.input_h = self.model.input.shape[2]
-        self.input_w = self.model.input.shape[1]
+        self.input_h = self.model.input.shape[2].value
+        self.input_w = self.model.input.shape[1].value
 
     @staticmethod
     def sigmoid(x):
@@ -166,7 +166,7 @@ class Yolo:
             image_shapes.append(image.shape[:2])
             resized_image = cv2.resize(
                 image, (input_w, input_h), interpolation=cv2.INTER_LINEAR)
-            pimage = resized_image.astype(np.float32) / 255.0  # Normalización
+            pimage = resized_image / 255  # Normalización
             pimages.append(pimage)
 
         pimages = np.array(pimages)
