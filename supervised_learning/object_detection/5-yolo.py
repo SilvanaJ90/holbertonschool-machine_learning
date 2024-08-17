@@ -16,8 +16,8 @@ class Yolo:
         self.anchors = anchors
         with open(classes_path) as f:
             self.class_names = [line.strip() for line in f.readlines()]
-        self.input_h = self.model.input.shape[2].value
-        self.input_w = self.model.input.shape[1].value
+        self.input_h = self.model.input.shape[2]
+        self.input_w = self.model.input.shape[1]
 
     @staticmethod
     def sigmoid(x):
