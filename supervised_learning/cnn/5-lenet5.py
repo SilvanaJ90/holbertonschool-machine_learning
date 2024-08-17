@@ -65,7 +65,7 @@ def lenet5(X):
 
     optimizer = K.optimizers.Adam(learning_rate=0.001)
     model.compile(
-        optimizer=optimizer
+        optimizer=optimizer,
         loss='categorical_crossentropy',
         metrics=['accuracy']
     )
