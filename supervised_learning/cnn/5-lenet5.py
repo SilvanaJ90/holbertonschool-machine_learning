@@ -27,53 +27,46 @@ def lenet5(X):
         use the relu activation function
         you may import tensorflow.keras as K
     """
-    initializer = K.initializers.he_normal()
+    initializer = K.initializers.he_normal(seed=None)
 
-    C1 = K.layers.Conv2D(filters=6,
-                         kernel_size=(5, 5),
-                         padding='same',
-                         kernel_initializer=initializer,
-                         activation=K.activations.relu)
-    output_1 = C1(X)
+    # Convolutional layer 1
+    conv1 = K.layers.Conv2D(filters=6, kernel_size=(5, 5), padding='same',
+                            activation='relu',
+                            kernel_initializer=initializer)(X)
 
-    P2 = K.layers.MaxPool2D(pool_size=(2, 2),
-                            strides=(2, 2))
-    output_2 = P2(output_1)
+    # Max pooling layer 1
+    pool1 = K.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv1)
 
-    C3 = K.layers.Conv2D(filters=16,
-                         kernel_size=(5, 5),
-                         padding='valid',
-                         kernel_initializer=initializer,
-                         activation=K.activations.relu)
-    output_3 = C3(output_2)
+    # Convolutional layer 2
+    conv2 = K.layers.Conv2D(filters=16, kernel_size=(5, 5), padding='valid',
+                            activation='relu',
+                            kernel_initializer=initializer)(pool1)
 
-    P4 = K.layers.MaxPool2D(pool_size=(2, 2),
-                            strides=(2, 2))
-    output_4 = P4(output_3)
+    # Max pooling layer 2
+    pool2 = K.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(conv2)
 
-    output_5 = K.layers.Flatten()(output_4)
+    # Flatten
+    flatten = K.layers.Flatten()(pool2)
 
-    FC6 = K.layers.Dense(units=120,
-                         kernel_initializer=initializer,
-                         activation=K.activations.relu)
-    output_6 = FC6(output_5)
+    # Fully connected layer 1
+    fc1 = K.layers.Dense(
+        units=120, activation='relu',
+        kernel_initializer=initializer)(flatten)
 
-    FC7 = K.layers.Dense(units=84,
-                         kernel_initializer=initializer,
-                         activation=K.activations.relu)
-    output_7 = FC7(output_6)
+    # Fully connected layer 2
+    fc2 = K.layers.Dense(
+        units=84, activation='relu',
+        kernel_initializer=initializer)(fc1)
 
-    FC8 = K.layers.Dense(units=10,
-                         kernel_initializer=initializer)
-    output_8 = FC8(output_7)
-
-    softmax = K.layers.Softmax()(output_8)
-
-    model = K.Model(inputs=X, outputs=softmax)
+    # Output layer
+    output = K.layers.Dense(units=10, activation='softmax')(fc2)
 
     optimizer = K.optimizers.Adam()
-    model.compile(optimizer=optimizer,
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
+    model = K.Model(inputs=X, outputs=output)
+    model.compile(
+        optimizer=optimizer,
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+        )
 
     return model
