@@ -27,7 +27,7 @@ def lenet5(X):
         use the relu activation function
         you may import tensorflow.keras as K
     """
-    initializer = K.initializers.he_normal(seed=1)
+    initializer = K.initializers.he_normal(seed=0)
 
     # Convolutional layer 1
     conv1 = K.layers.Conv2D(filters=6, kernel_size=(5, 5), padding='same',
@@ -66,6 +66,6 @@ def lenet5(X):
         optimizer='adam',
         loss='categorical_crossentropy',
         metrics=['accuracy']
-        )
+    )
 
     return model
