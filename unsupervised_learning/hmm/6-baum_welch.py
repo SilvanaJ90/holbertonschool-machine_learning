@@ -36,6 +36,7 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
         xi = np.zeros((T - 1, M, M))
         for t in range(T - 1):
             denom = np.sum(alpha[t, :, None] * beta[t + 1] * A * B[:, Obs[t + 1]], axis=1)
+            denom[denom == 0] = 1e-10  # Avoid division by zero
             for i in range(M):
                 xi[t, i] = (alpha[t, i] * beta[t + 1] * A[i] * B[:, Obs[t + 1]]) / denom
         return xi
@@ -55,6 +56,8 @@ def baum_welch(Observations, Transition, Emission, Initial, iterations=1000):
         for k in range(N):
             mask = (Observations == k)
             new_Emission[:, k] = np.sum(gammas[mask], axis=0)
-        Emission = new_Emission / np.sum(gammas, axis=0, keepdims=True)
-        
+        row_sums = np.sum(new_Emission, axis=1, keepdims=True)
+        row_sums[row_sums == 0] = 1e-10  # Avoid division by zero
+        Emission = new_Emission / row_sums
+
     return Transition, Emission
