@@ -164,9 +164,15 @@ class Yolo:
 
         for image in images:
             image_shapes.append(image.shape[:2])
-            resized_image = cv2.resize(
-                image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
-            pimage = resized_image / 255
+            resized_image = cv2.resize(image, (input_w, input_h), interpolation=cv2.INTER_CUBIC)
+            pimage = resized_image.astype(np.float32) / 255  # Normalización
+            
+            # Solo para depuración: mostrar la imagen procesada
+            display_image = (pimage * 255).astype(np.uint8)
+            cv2.imshow('Processed Image', display_image)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
             pimages.append(pimage)
 
         pimages = np.array(pimages)
