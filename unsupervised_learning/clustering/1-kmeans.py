@@ -11,38 +11,33 @@ def kmeans(X, k, iterations=1000):
         return None, None
     if not isinstance(iterations, int) or iterations <= 0:
         return None, None
-
-    if not isinstance(X, np.ndarray) or not isinstance(k, int) or not isinstance(iterations, int):
-        return None, None
-
-    
     n, d = X.shape
-    
-    # Initialize centroids using a uniform distribution
+
+    # Inicializar los centroides de los clusters
     min_vals = np.min(X, axis=0)
     max_vals = np.max(X, axis=0)
-    C = np.random.uniform(min_vals, max_vals, size=(k, d))
-    
-    for _ in range(iterations):
-        # Compute the distances from each point to each centroid
-        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
-        
-        # Assign each point to the nearest centroid
+
+    centroids = np.random.uniform(min_vals, max_vals, size=(k, d))
+
+    if centroids.shape != (k, d):
+        return None, None
+
+    for i in range(iterations):
+        # Asignación de Puntos a los Centroides más Cercanos
+        distances = np.linalg.norm(X[:, np.newaxis] - centroids, axis=2)
         clss = np.argmin(distances, axis=1)
-        
-        # Save the old centroids for convergence check
-        C_old = C.copy()
-        
-        # Update centroids
-        for i in range(k):
-            if np.any(clss == i):
-                C[i] = X[clss == i].mean(axis=0)
+
+        # Actualización de los centroides
+        C = np.zeros((k, d))
+        for c in range(k):
+            if np.sum(clss == c) > 0:
+                C[c] = X[clss == c].mean(axis=0)
             else:
-                # Reinitialize centroid if no points are assigned to it
-                C[i] = np.random.uniform(min_vals, max_vals, size=(d,))
-        
-        # Check if centroids have changed
-        if np.all(C == C_old):
+                C[c] = np.random.uniform(min_vals, max_vals, size=(d,))
+
+        # Comprobación de Convergencia
+        if np.array_equal(centroids, C):
             break
-    
-    return C, clss
+        centroids = np.copy(C)
+
+    return centroids, clss
