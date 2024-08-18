@@ -20,11 +20,12 @@ def maximization(X, g):
     """
     if type(X) is not np.ndarray or X.ndim != 2:
         return None, None, None
-    n, d = X.shape
+    
     if type(g) is not np.ndarray or g.ndim != 2 or g.shape[1] != n \
        or not np.all((g >= 0) & (g <= 1)):
         return None, None, None
-
+    
+    n, d = X.shape
     k, n = g.shape
     m = np.zeros((k, d))
     S = np.zeros((k, d, d))
