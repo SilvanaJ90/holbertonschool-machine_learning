@@ -18,36 +18,23 @@ def maximization(X, g):
         S is a numpy.ndarray of shape (k, d, d) containing the updated
         covariance matrices for each cluster
     """
-    if not isinstance(X, np.ndarray) or X.ndim != 2:
+    if type(X) is not np.ndarray or X.ndim != 2:
         return None, None, None
-    if not isinstance(g, np.ndarray) or g.ndim != 2:
-        return None, None, None
-    
     n, d = X.shape
-    k = g.shape[0]
-
-    if g.shape != (k, n):
+    if type(g) is not np.ndarray or g.ndim != 2 or g.shape[1] != n \
+       or not np.all((g >= 0) & (g <= 1)):
         return None, None, None
 
-    # Calculate the total responsibilities for each cluster
-    total_responsibilities = np.sum(g, axis=1)
-
-    # Calculate the updated priors
-    pi = total_responsibilities / n
-
-    # Initialize m and S
+    k, n = g.shape
     m = np.zeros((k, d))
     S = np.zeros((k, d, d))
 
-    # Calculate the updated means
-    for i in range(k):
-        weighted_sum = np.dot(g[i], X) / total_responsibilities[i]
-        m[i] = weighted_sum
+    nk = np.sum(g, axis=1)
+    pi = nk / n
 
-    # Calculate the updated covariances
     for i in range(k):
-        diff = X - m[i]
-        weighted_cov = np.dot(g[i] * diff.T, diff) / total_responsibilities[i]
-        S[i] = weighted_cov
-
-    return pi, m, S
+        gi = g[i].reshape((-1, 1))
+        m[i] = np.sum(gi * X, axis=0) / nk[i]
+        Xm = X - m[i]
+        S[i] = np.matmul(Xm.T, Xm * gi) / nk[i]
+        return pi, m, S
