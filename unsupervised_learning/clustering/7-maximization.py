@@ -26,16 +26,18 @@ def maximization(X, g):
         return None, None, None
 
     k = g.shape[0]
-    m = np.zeros((k, d))
+    nk = np.sum(g, axis=1)
+
+    # Check if nk contains any zero values
+    if np.any(nk == 0):
+        return None, None, None
+
+    pi = nk / n
+    m = np.matmul(g, X) / nk[:, np.newaxis]
     S = np.zeros((k, d, d))
 
-    nk = np.sum(g, axis=1)
-    pi = nk / n
-
     for i in range(k):
-        gi = g[i].reshape((-1, 1))
-        m[i] = np.sum(gi * X, axis=0) / nk[i]
         Xm = X - m[i]
-        S[i] = np.matmul(Xm.T, Xm * gi) / nk[i]
+        S[i] = np.matmul(Xm.T, Xm * g[i][:, np.newaxis]) / nk[i]
 
     return pi, m, S
