@@ -24,20 +24,26 @@ def kmeans(X, k, iterations=1000):
 
     for i in range(iterations):
         # Asignación de Puntos a los Centroides más Cercanos
-        distances = np.linalg.norm(X[:, np.newaxis] - centroids, axis=2)
-        clss = np.argmin(distances, axis=1)
+        centroids = np.copy(centroids)
+        centroids_extended = centroids[:, np.newaxis]
 
-        # Actualización de los centroides
-        C = np.zeros((k, d))
+        # distances also know as euclidean distance
+        distances = np.sqrt(((X - centroids_extended) ** 2).sum(axis=2))
+        # an array containing the index to the nearest centroid per each point
+        clss = np.argmin(distances, axis=0)
+
+        # Assign all points to the nearest centroid
         for c in range(k):
-            if np.sum(clss == c) > 0:
-                C[c] = X[clss == c].mean(axis=0)
+            if X[clss == c].size == 0:
+                centroids[c] = np.random.uniform(min_vals, max_vals, size=(1, d))
             else:
-                C[c] = np.random.uniform(min_vals, max_vals, size=(d,))
+                centroids[c] = X[clss == c].mean(axis=0)
 
-        # Comprobación de Convergencia
-        if np.array_equal(centroids, C):
+        centroids_extended = centroids[:, np.newaxis]
+        distances = np.sqrt(((X - centroids_extended) ** 2).sum(axis=2))
+        clss = np.argmin(distances, axis=0)
+
+        if (centroids == centroids).all():
             break
-        centroids = np.copy(C)
 
     return centroids, clss
