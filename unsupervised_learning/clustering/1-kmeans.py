@@ -5,10 +5,16 @@ import numpy as np
 
 def kmeans(X, k, iterations=1000):
     """ Doc """
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+        return None, None
+    if not isinstance(k, int) or k <= 0:
+        return None, None
+    if not isinstance(iterations, int) or iterations <= 0:
+        return None, None
+
     if not isinstance(X, np.ndarray) or not isinstance(k, int) or not isinstance(iterations, int):
         return None, None
-    if k <= 0 or iterations <= 0:
-        return None, None
+
     
     n, d = X.shape
     
