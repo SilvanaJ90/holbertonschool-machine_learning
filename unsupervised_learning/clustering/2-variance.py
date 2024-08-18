@@ -13,7 +13,6 @@ def variance(X, C):
     You are not allowed to use any loops
     Returns: var, or None on failure
         var is the total variance
-
     """
     if not isinstance(X, np.ndarray) or not isinstance(C, np.ndarray):
         return None

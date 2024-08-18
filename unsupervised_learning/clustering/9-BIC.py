@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ Finds the best number of clusters for a GMM using Bayesian Information Criterion """
 import numpy as np
-from sklearn.mixture import GaussianMixture
+expectation_maximization = __import__('8-EM').expectation_maximization
 
 def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     """

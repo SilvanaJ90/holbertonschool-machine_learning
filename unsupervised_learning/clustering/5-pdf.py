@@ -30,6 +30,7 @@ def pdf(X, m, S):
     if type(S) is not np.ndarray or S.ndim != 2 or S.shape != (d, d):
         return None
     Xm = X - m
+    # e=−0.5⋅(X−m)T⋅S−1⋅(X−m)
     e = - 0.5 * np.sum(Xm * np.matmul(np.linalg.inv(S), Xm.T).T, axis=1)
     num = np.exp(e)
     det = np.linalg.det(S)
