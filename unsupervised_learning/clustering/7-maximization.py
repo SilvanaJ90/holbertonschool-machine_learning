@@ -25,7 +25,7 @@ def maximization(X, g):
        or not np.all((g >= 0) & (g <= 1)):
         return None, None, None
 
-    k = g.shape[0]
+    k, n = g.shape[0]
     m = np.zeros((k, d))
     S = np.zeros((k, d, d))
 
