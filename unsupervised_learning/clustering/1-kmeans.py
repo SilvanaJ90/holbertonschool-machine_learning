@@ -5,40 +5,38 @@ import numpy as np
 
 def kmeans(X, k, iterations=1000):
     """ Doc """
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+    if not isinstance(X, np.ndarray) or not isinstance(k, int) or not isinstance(iterations, int):
         return None, None
-    if not isinstance(k, int) or k <= 0:
+    if k <= 0 or iterations <= 0:
         return None, None
-    if not isinstance(iterations, int) or iterations <= 0:
-        return None, None
-
-    # Inicializar los centroides de los clusters
+    
     n, d = X.shape
-
-    # Initialize centroids using a multivariate uniform distribution
-    min_values = np.min(X, axis=0)
-    max_values = np.max(X, axis=0)
-    C = np.random.uniform(min_values, max_values, (k, d))
-
-    clss = np.zeros(n)
-
+    
+    # Initialize centroids using a uniform distribution
+    min_vals = np.min(X, axis=0)
+    max_vals = np.max(X, axis=0)
+    C = np.random.uniform(min_vals, max_vals, size=(k, d))
+    
     for _ in range(iterations):
-        # Calculate distances and assign clusters
+        # Compute the distances from each point to each centroid
         distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
-        new_clss = np.argmin(distances, axis=1)
-
-        # If no change in clusters, return the result
-        if np.all(new_clss == clss):
-            break
-        clss = new_clss
-
+        
+        # Assign each point to the nearest centroid
+        clss = np.argmin(distances, axis=1)
+        
+        # Save the old centroids for convergence check
+        C_old = C.copy()
+        
         # Update centroids
         for i in range(k):
-            points_in_cluster = X[clss == i]
-            if len(points_in_cluster) == 0:
-                # Reinitialize the centroid if no points are assigned to the cluster
-                C[i] = np.random.uniform(min_values, max_values, d)
+            if np.any(clss == i):
+                C[i] = X[clss == i].mean(axis=0)
             else:
-                C[i] = np.mean(points_in_cluster, axis=0)
-
+                # Reinitialize centroid if no points are assigned to it
+                C[i] = np.random.uniform(min_vals, max_vals, size=(d,))
+        
+        # Check if centroids have changed
+        if np.all(C == C_old):
+            break
+    
     return C, clss
