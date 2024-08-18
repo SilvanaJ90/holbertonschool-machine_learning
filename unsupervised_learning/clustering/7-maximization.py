@@ -18,23 +18,33 @@ def maximization(X, g):
         S is a numpy.ndarray of shape (k, d, d) containing the updated
         covariance matrices for each cluster
     """
-    if type(X) is not np.ndarray or X.ndim != 2:
-        return None, None, None
-    n, d = X.shape
-    if type(g) is not np.ndarray or g.ndim != 2 or g.shape[1] != n \
-       or not np.all((g >= 0) & (g <= 1)):
-        return None, None, None
-
-    k, n_ = g.shape
-    m = np.zeros((k, d))
-    S = np.zeros((k, d, d))
-
-    nk = np.sum(g, axis=1)
-    pi = nk / n
-
-    for i in range(k):
-        gi = g[i].reshape((-1, 1))
-        m[i] = np.sum(gi * X, axis=0) / nk[i]
-        Xm = X - m[i]
-        S[i] = np.matmul(Xm.T, Xm * gi) / nk[i]
+    try:
+        # Validate input shapes
+        if len(X.shape) != 2 or len(g.shape) != 2:
+            return None, None, None
+        
+        n, d = X.shape
+        k, n_ = g.shape
+        
+        if n != n_:
+            return None, None, None
+        
+        # Calculate the sum of the posterior probabilities for each cluster
+        Nk = np.sum(g, axis=1)  # Shape (k,)
+        
+        # Calculate the updated priors (pi)
+        pi = Nk / n  # Shape (k,)
+        
+        # Calculate the updated means (m)
+        m = (g @ X) / Nk[:, np.newaxis]  # Shape (k, d)
+        
+        # Calculate the updated covariance matrices (S)
+        S = np.zeros((k, d, d))  # Initialize S with zeros
+        for i in range(k):
+            X_centered = X - m[i]  # Center the data for the i-th cluster
+            S[i] = (g[i][:, np.newaxis] * X_centered).T @ X_centered / Nk[i]
+        
         return pi, m, S
+    
+    except Exception:
+        return None, None, None
