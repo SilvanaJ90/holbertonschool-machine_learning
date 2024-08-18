@@ -11,33 +11,34 @@ def kmeans(X, k, iterations=1000):
         return None, None
     if not isinstance(iterations, int) or iterations <= 0:
         return None, None
-    n, d = X.shape
 
     # Inicializar los centroides de los clusters
-    min_vals = np.min(X, axis=0)
-    max_vals = np.max(X, axis=0)
+    n, d = X.shape
 
-    centroids = np.random.uniform(min_vals, max_vals, size=(k, d))
+    # Initialize centroids using a multivariate uniform distribution
+    min_values = np.min(X, axis=0)
+    max_values = np.max(X, axis=0)
+    C = np.random.uniform(min_values, max_values, (k, d))
 
-    if centroids.shape != (k, d):
-        return None, None
+    clss = np.zeros(n)
 
-    for i in range(iterations):
-        # Asignación de Puntos a los Centroides más Cercanos
-        distances = np.linalg.norm(X[:, np.newaxis] - centroids, axis=2)
-        clss = np.argmin(distances, axis=1)
+    for _ in range(iterations):
+        # Calculate distances and assign clusters
+        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
+        new_clss = np.argmin(distances, axis=1)
 
-        # Actualización de los centroides
-        C = np.zeros((k, d))
-        for c in range(k):
-            if np.sum(clss == c) > 0:
-                C[c] = X[clss == c].mean(axis=0)
-            else:
-                C[c] = np.random.uniform(min_vals, max_vals, size=(1, d))
-
-        # Comprobación de Convergencia
-        if np.array_equal(centroids, C):
+        # If no change in clusters, return the result
+        if np.all(new_clss == clss):
             break
-        centroids = np.copy(C)
+        clss = new_clss
 
-    return centroids, clss
+        # Update centroids
+        for i in range(k):
+            points_in_cluster = X[clss == i]
+            if len(points_in_cluster) == 0:
+                # Reinitialize the centroid if no points are assigned to the cluster
+                C[i] = np.random.uniform(min_values, max_values, d)
+            else:
+                C[i] = np.mean(points_in_cluster, axis=0)
+
+    return C, clss
