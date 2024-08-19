@@ -12,30 +12,40 @@ def maximization(X, g):
     You may use at most 1 loop
     Returns: pi, m, S, or None, None, None on failure
         pi is a numpy.ndarray of shape (k,) containing the
-        updated priors for each cluster
+        updated pi for each cluster
         m is a numpy.ndarray of shape (k, d) containing the updated
         centroid means for each cluster
         S is a numpy.ndarray of shape (k, d, d) containing the updated
         covariance matrices for each cluster
     """
-    if type(X) is not np.ndarray or X.ndim != 2:
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None
-    
-    if type(g) is not np.ndarray or g.ndim != 2 or g.shape[1] != n \
-       or not np.all((g >= 0) & (g <= 1)):
+
+    if not isinstance(g, np.ndarray) or len(X.shape) != 2:
         return None, None, None
-    
+
+    k = g.shape[0]
     n, d = X.shape
-    k, n = g.shape
+
+    nk = np.sum(g, axis=0)
+
+    check = np.sum(nk)
+    if check != X.shape[0]:
+        return None, None, None
+
     m = np.zeros((k, d))
     S = np.zeros((k, d, d))
-
-    nk = np.sum(g, axis=1)
-    pi = nk / n
+    pi =  np.zeros((k,))
 
     for i in range(k):
-        gi = g[i].reshape((-1, 1))
-        m[i] = np.sum(gi * X, axis=0) / nk[i]
-        Xm = X - m[i]
-        S[i] = np.matmul(Xm.T, Xm * gi) / nk[i]
-        return pi, m, S
+        mu_up = np.sum((g[i, :, np.newaxis] * X), axis=0)
+        mu_down = np.sum(g[i], axis=0)
+        m[i] = mu_up / mu_down
+
+        x_m = X - m[i]
+        sigma_up = np.matmul(g[i] * x_m.T, x_m)
+        sigma_down = np.sum(g[i])
+        S[i] = sigma_up / sigma_down
+
+        pi[i] = np.sum(g[i]) / n
+    return pi, m, S
