@@ -39,8 +39,8 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         return None, None, None, None
     if not isinstance(verbose, bool):
         return None, None, None, None
-    if kmax >= kmin:
-        return None, None, None, None
+    if kmax is not None and (not isinstance(kmax, int) or kmax <= kmin):
+        return None, None
 
     n, d = X.shape
     if kmax is None:
@@ -48,7 +48,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
 
     best_k = None
     best_result = None
-    l = np.zeros(kmax - kmin + 1)
+    log_likelihoods = np.zeros(kmax - kmin + 1)
     b = np.zeros(kmax - kmin + 1)
 
     # Loop through each number of clusters from kmin to kmax
@@ -63,7 +63,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
             n_params = k * (d + d * (d + 1) / 2) + k - 1
             BIC_value = n_params * np.log(n) - 2 * log_likelihood
 
-            l[k - kmin] = log_likelihood
+            log_likelihoods[k - kmin] = log_likelihood
             b[k - kmin] = BIC_value
 
             # Update best k if current BIC is lower
@@ -71,4 +71,4 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
                 best_k = k
                 best_result = (pi, m, S)
 
-    return best_k, best_result, l, b
+    return best_k, best_result, log_likelihoods, b
