@@ -8,21 +8,7 @@ maximization = __import__('7-maximization').maximization
 
 def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
     """
-    Perform the EM algorithm for a GMM.
-
-    Parameters:
-    - X: numpy.ndarray of shape (n, d) containing the dataset.
-    - k: positive integer, number of clusters.
-    - iterations: positive integer, maximum number of iterations.
-    - tol: non-negative float, tolerance for log likelihood change.
-    - verbose: boolean, if True, print log likelihood every 10 iterations.
-
-    Returns:
-    - pi: numpy.ndarray of shape (k,) containing the updated priors.
-    - m: numpy.ndarray of shape (k, d) containing the updated centroid means.
-    - S: numpy.ndarray of shape (k, d, d) containing the updated covariance matrices.
-    - g: numpy.ndarray of shape (k, n) containing the probabilities for each data point in each cluster.
-    - l: float, log likelihood of the model.
+    doc
     """
     # Initialize parameters
     pi, m, S = initialize(X, k)
@@ -39,7 +25,6 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
         # Compute log likelihood
         log_likelihood_new = np.sum(np.log(np.sum(g, axis=0)))
         
-        # Check for convergence
         if log_likelihood_old is not None and np.abs(log_likelihood_new - log_likelihood_old) <= tol:
             if verbose:
                 print(f"Log Likelihood after {i} iterations: {log_likelihood_new:.5f}")
