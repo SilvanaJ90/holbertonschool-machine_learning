@@ -23,7 +23,7 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
     # Initialize parameters
     pi, m, S = initialize(X, k)
     
-    log_likelihood_old = None
+    log_likelihood_old = 0
     
     for i in range(iterations):
         # Expectation step
