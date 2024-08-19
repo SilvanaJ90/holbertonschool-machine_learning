@@ -31,32 +31,34 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         return None, None, None, None
     if not isinstance(tol, float) or tol < 0:
         return None, None, None, None
-
+    if not isinstance(verbose, bool):
+        return None, None, None, None
+    
     n, d = X.shape
-    kmax = kmax or n  # Set kmax to the number of data points if None
+    if kmax is None:
+        kmax = n
 
     best_k = None
     best_result = None
     l = np.zeros(kmax - kmin + 1)
     b = np.zeros(kmax - kmin + 1)
-
+    
+    # Loop through each number of clusters from kmin to kmax
     for k in range(kmin, kmax + 1):
-        # Fit GMM using EM algorithm
-        gmm = GaussianMixture(n_components=k, max_iter=iterations, tol=tol, verbose=verbose)
-        gmm.fit(X)
+        # Run expectation-maximization algorithm
+        pi, m, S, g, log_likelihood = expectation_maximization(X, k, iterations, tol, verbose)
         
-        # Calculate log-likelihood
-        log_likelihood = gmm.score(X) * n
-        l[k - kmin] = log_likelihood
-        
-        # Calculate BIC
-        p = k * (d + d * (d + 1) / 2) + k - 1  # Number of parameters: k*(d + d*(d + 1)/2) + k - 1
-        bic = p * np.log(n) - 2 * log_likelihood
-        b[k - kmin] = bic
-
-        # Check for the best BIC
-        if best_k is None or bic < b[best_k - kmin]:
-            best_k = k
-            best_result = (gmm.weights_, gmm.means_, gmm.covariances_)
-
+        # Compute BIC
+        if pi is not None and m is not None and S is not None and g is not None:
+            n_params = k * (d + d * (d + 1) / 2) + k - 1
+            BIC_value = n_params * np.log(n) - 2 * log_likelihood
+            
+            l[k - kmin] = log_likelihood
+            b[k - kmin] = BIC_value
+            
+            # Update best k if current BIC is lower
+            if best_k is None or BIC_value < b[best_k - kmin]:
+                best_k = k
+                best_result = (pi, m, S)
+    
     return best_k, best_result, l, b
