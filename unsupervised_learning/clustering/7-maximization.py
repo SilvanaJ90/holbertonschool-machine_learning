@@ -35,7 +35,7 @@ def maximization(X, g):
 
     m = np.zeros((k, d))
     S = np.zeros((k, d, d))
-    pi =  np.zeros((k,))
+    pi = np.zeros((k,))
 
     for i in range(k):
         mu_up = np.sum((g[i, :, np.newaxis] * X), axis=0)
