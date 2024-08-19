@@ -25,6 +25,7 @@ def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
         # Compute log likelihood
         log_likelihood_new = np.sum(np.log(np.sum(g, axis=0)))
         
+        # Check for convergence
         if log_likelihood_old is not None and np.abs(log_likelihood_new - log_likelihood_old) <= tol:
             if verbose:
                 print(f"Log Likelihood after {i} iterations: {log_likelihood_new:.5f}")
